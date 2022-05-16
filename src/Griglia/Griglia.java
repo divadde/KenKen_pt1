@@ -3,6 +3,6 @@ package Griglia;
 public class Griglia {
 
     public static void main(String[] args){
-        System.out.println("ciao dio");
+        System.out.println("ciao di");
     }
 }
