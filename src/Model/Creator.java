@@ -2,7 +2,10 @@ package Model;
 
 //template method
 public abstract class Creator {
-    //todo
+
+    protected static EditableGridGame egg;
+    protected static int dimension;
+
     public void genera(){
         inserisciNumeri();
         shuffleNumeri();

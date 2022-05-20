@@ -2,6 +2,14 @@ package Model;
 
 public abstract class Constraint implements Cloneable {
     abstract void addCell(EditableCell ec);
-    public abstract Constraint clone(); //verifica correttezza sul metodo clone
+    abstract void setValues();
+    @Override
+    public Constraint clone() {
+        try {
+            return (Constraint) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new Error(e);
+        }
+    }
     abstract boolean verify();
 }
