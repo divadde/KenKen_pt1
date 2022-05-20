@@ -1,61 +1,60 @@
 package Model;
 
-import java.util.List;
-
-public class ConcreteCreator extends Creator{
+public class ConcreteGenerator extends Generator {
 
     private Constraint constraint; //aggiungi possibilità di aggiungere una lista di constraints todo
+    //todo aggiungi parametri
     private int maxGrandezza;
     private int minGrandezza;
 
 
-    public ConcreteCreator(EditableGridGame egg, int dimension){
-        this.egg=egg;
+    public ConcreteGenerator(GridGame egg, int dimension){
+        this.gg=gg;
         this.dimension=dimension;
         egg.setDimension(dimension);
     }
 
     @Override
-    public void inserisciNumeri() {
+    public void insertNumbers() {
         for(int i=0; i<dimension; i++){
             for(int j=0; j<dimension; j++){
-                egg.setCell(((i+j)%dimension)+1,i,j);
+                gg.setCell(((i+j)%dimension)+1,i,j);
             }
         }
     }
 
     @Override
-    public void shuffleNumeri() { //shuffle pari alla dimensione
+    public void shuffleNumbers() { //shuffle pari alla dimensione
         for(int i=0; i<dimension; i++) {
             int x = (int) (Math.random() * dimension);
             int y = (int) (Math.random() * dimension);
-            if (x != y) egg.switchRow(x, y);
+            if (x != y) gg.switchRow(x, y);
             int z = (int) (Math.random() * dimension);
             int k = (int) (Math.random() * dimension);
-            if (z != k) egg.switchColumn(z, k);
+            if (z != k) gg.switchColumn(z, k);
         }
     }
 
-    @Override //todo trova il bug
-    public void aggiungiGabbie() {
-        //LO AGGIUNGO QUI MA POI VA RIMOSSO! è SOLO UNA PROVA todo:
+    @Override
+    public void addConstraints() {
+        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
         constraint = new Cage();
         while(true){
-            EditableCell nextCell = nextPoint();
+            CellIF nextCell = nextPoint();
             if(nextCell==null) break; //abbiamo finito
             else {
                 Constraint c = constraint.clone();
-                egg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
                 //scegli numero randomico di passi
                 int n = chooseCageDimension();
                 for(int i=0; i<n; i++){ //todo se non si può raggiungere la dimensione prestabilita?
-                    EditableCell lastCell=null;
+                    CellIF lastCell=null;
                     if(nextCell!=null) lastCell=nextCell;
                     else break;
                     //scegli direzioni randomiche
                     Direction d = Direction.DESTRA.chooseRandomly();
                     nextCell = d.doOp(lastCell);
-                    if(nextCell!=null) egg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                    if(nextCell!=null) gg.setConstraint(c,nextCell.getX(),nextCell.getY());
                     else{ //fornisco altri 3 tentativi di spostarsi
                         int j=0;
                         while(nextCell!=null || j>=3){
@@ -76,30 +75,29 @@ public class ConcreteCreator extends Creator{
         return (int) (Math.random()*4);
     }
 
-    private interface Directionable {
-        Direction chooseRandomly();
-        EditableCell doOp(EditableCell ec);
+    private interface Directionable { //todo è necessaria?
+        CellIF doOp(CellIF ec);
     }
     private enum Direction implements Directionable{
         DESTRA {
-            public EditableCell doOp(EditableCell currPoint) {
+            public CellIF doOp(CellIF currPoint) {
                 int nextY = currPoint.getY()+1;
-                if(nextY<dimension && !(egg.getCell(currPoint.getX(),nextY).hasConstraint()))
-                    return egg.getCell(currPoint.getX(),nextY);
+                if(nextY<dimension && !(gg.getCell(currPoint.getX(),nextY).hasConstraint()))
+                    return gg.getCell(currPoint.getX(),nextY);
                 return null;
             }
         }, SINISTRA {
-            public EditableCell doOp(EditableCell currPoint) {
+            public CellIF doOp(CellIF currPoint) {
                 int nextY = currPoint.getY()-1;
-                if(nextY>=0 && !(egg.getCell(currPoint.getX(),nextY).hasConstraint()))
-                    return egg.getCell(currPoint.getX(),nextY);
+                if(nextY>=0 && !(gg.getCell(currPoint.getX(),nextY).hasConstraint()))
+                    return gg.getCell(currPoint.getX(),nextY);
                 return null;
             }
         }, GIU {
-            public EditableCell doOp(EditableCell currPoint) {
+            public CellIF doOp(CellIF currPoint) {
                 int nextX = currPoint.getX()+1;
-                if(nextX<dimension && !(egg.getCell(nextX,currPoint.getY()).hasConstraint()))
-                    return egg.getCell(nextX,currPoint.getY());
+                if(nextX<dimension && !(gg.getCell(nextX,currPoint.getY()).hasConstraint()))
+                    return gg.getCell(nextX,currPoint.getY());
                 return null;
             }
         };
@@ -114,23 +112,23 @@ public class ConcreteCreator extends Creator{
         }
     }
 
-    private EditableCell nextPoint(){
+    private CellIF nextPoint(){
         for(int i=0; i<dimension; i++){
             for(int j=0; j<dimension; j++){
-                if (!(egg.getCell(i,j).hasConstraint()))
-                    return egg.getCell(i,j);
+                if (!(gg.getCell(i,j).hasConstraint()))
+                    return gg.getCell(i,j);
             }
         }
         return null;
     }
 
     @Override
-    public void cancellaNumeri() {
-        egg.eraseNumbers();
+    public void eraseNumbers() {
+        gg.clean();
     }
 
     public class Builder{
-        //todo
+        //todo fai il Builder per gestire i parametri del generatore
     }
 
 }

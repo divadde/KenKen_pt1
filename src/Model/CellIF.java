@@ -1,6 +1,6 @@
 package Model;
 
-public interface EditableCell {
+public interface CellIF {
     boolean setValue(int value);
     int getValue();
     void setX(int x);
@@ -10,4 +10,5 @@ public interface EditableCell {
     boolean hasConstraint();
     Constraint getConstraint();
     void setConstraint(Constraint c);
+    void clean();
 }

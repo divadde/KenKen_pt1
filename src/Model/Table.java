@@ -2,14 +2,14 @@ package Model;
 
 import java.util.Scanner;
 
-public class Table implements GridGame, EditableGridGame {
+public class Table implements GridGame {
     private static int dimension;
     private static Cell[][] table;
 
-    public Table() {
-    }
+    public Table() {}
 
-    public Table(int dimension) { //todo aggiusta
+    /* NON USATO
+    public Table(int dimension) {
         this.dimension = dimension;
         table = new Cell[dimension][dimension];
         for (int i = 0; i < dimension; i++) {
@@ -18,20 +18,16 @@ public class Table implements GridGame, EditableGridGame {
             }
         }
     }
+    */
 
-    @Override
+    @Override //todo, forse ci sarà da aggiustare qualcosa per la parte grafica
     public boolean addValue(int val, int x, int y) {
         return (val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
     }
 
     @Override
     public void removeValue(int x, int y) {
-        table[x][y].setValue(0);
-    }
-
-    @Override
-    public void eraseNumbers() {
-        clean();
+        table[x][y].clean();
     }
 
     @Override
@@ -39,22 +35,6 @@ public class Table implements GridGame, EditableGridGame {
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
                 table[i][j].clean();
-            }
-        }
-    }
-
-    @Override
-    public int getDimension() {
-        return dimension;
-    }
-
-    @Override
-    public void setDimension(int n) {
-        this.dimension = n;
-        table = new Cell[dimension][dimension];
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                table[i][j] = new Cell(i, j);
             }
         }
     }
@@ -70,19 +50,36 @@ public class Table implements GridGame, EditableGridGame {
     }
 
     @Override
-    public EditableCell getCell(int x, int y) {
-        return table[x][y];
-    }
-
-    @Override
     public void setCell(int value, int x, int y) {
         table[x][y] = new Cell(x, y);
         table[x][y].setValue(value);
     }
 
+    @Override
+    public CellIF getCell(int x, int y) {
+        return table[x][y];
+    }
+
+    @Override
+    public void setDimension(int n) {
+        this.dimension = n;
+        table = new Cell[dimension][dimension];
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                table[i][j] = new Cell(i, j);
+            }
+        }
+    }
+
+    @Override
+    public int getDimension() {
+        return dimension;
+    }
+
+    //todo forse sarà utile se vogliamo introdurre un oggetto Constraint (per esempio un oggetto che regola la presenza di ripetizioni all'interno di una riga)
     private boolean verify(int val, int x, int y) {
-        Cell[] riga = getRow(x);
-        Cell[] colonna = getColumn(y);
+        Cell[] row = getRow(x);
+        Cell[] column = getColumn(y);
         for (int i = 0; i < dimension; i++) {
             if (i != y && val == table[x][i].getValue()) return false;
             if (i != x && val == table[i][y].getValue()) return false;
@@ -102,6 +99,7 @@ public class Table implements GridGame, EditableGridGame {
     }
 
     //scambio solo i valori!
+    @Override
     public void switchRow(int i, int j) {
         for (int n = 0; n < dimension; n++) {
             int tmp = table[i][n].getValue();
@@ -111,6 +109,7 @@ public class Table implements GridGame, EditableGridGame {
     }
 
     //scambio solo i valori!
+    @Override
     public void switchColumn(int i, int j) {
         for (int n = 0; n < dimension; n++) {
             int tmp = table[n][i].getValue();
@@ -130,7 +129,7 @@ public class Table implements GridGame, EditableGridGame {
         return sb.toString();
     }
 
-    public String cageString() {
+    public String constrString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < dimension; i++) {
             sb.append("\n");
@@ -141,7 +140,7 @@ public class Table implements GridGame, EditableGridGame {
         return sb.toString();
     }
 
-    private class Cell implements EditableCell {
+    private class Cell implements CellIF {
         private int value;
         private int x;
         private int y;
@@ -153,26 +152,32 @@ public class Table implements GridGame, EditableGridGame {
             value = 0;
         }
 
+        @Override
         public int getX() {
             return x;
         }
 
+        @Override
         public int getY() {
             return y;
         }
 
+        @Override
         public void setX(int x) {
             this.x = x;
         }
 
+        @Override
         public void setY(int y) {
             this.y = y;
         }
 
+        @Override
         public void clean() {
             value = 0;
         }
 
+        @Override
         public boolean setValue(int value) {
             this.value = value;
             if (cage != null)
@@ -180,19 +185,23 @@ public class Table implements GridGame, EditableGridGame {
             return true;
         }
 
-        public boolean hasConstraint() {
-            return cage != null;
-        }
-
+        @Override
         public int getValue() {
             return value;
         }
 
+        @Override
+        public boolean hasConstraint() {
+            return cage != null;
+        }
+
+        @Override
         public void setConstraint(Constraint cage) {
             this.cage = cage;
             this.cage.addCell(this);
         }
 
+        @Override
         public Constraint getConstraint() {
             return cage;
         }
@@ -206,17 +215,14 @@ public class Table implements GridGame, EditableGridGame {
 
     public static void main(String[] args) {
         System.out.println("KenKen!\n");
-        //occorre unificare le due interfacce
-        Table t = new Table();
-        EditableGridGame egg = t;
-        GridGame gg = t;
-        Creator c = new ConcreteCreator(egg, 4);
-        c.genera();
+        GridGame gg = new Table();
+        Generator c = new ConcreteGenerator(gg, 4);
+        c.generate();
         Scanner sc = new Scanner(System.in);
         while (true) {
-            System.out.println(egg);
+            System.out.println(gg);
             System.out.println();
-            System.out.println(egg.cageString());
+            System.out.println(gg.constrString());
             int value = dimension+1;
             while(value>dimension) {
                 System.out.print("Valore: ");
@@ -232,7 +238,7 @@ public class Table implements GridGame, EditableGridGame {
                 System.out.print("Nella y: ");
                 y = sc.nextInt();
             }
-            System.out.println(t.addValue(value,x,y)+"\n");
+            System.out.println(gg.addValue(value,x,y)+"\n");
         }
     }
 }

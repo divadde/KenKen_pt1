@@ -1,7 +1,7 @@
 package Model;
 
 public abstract class Constraint implements Cloneable {
-    abstract void addCell(EditableCell ec);
+    abstract void addCell(CellIF ec);
     abstract void setValues();
     @Override
     public Constraint clone() {
