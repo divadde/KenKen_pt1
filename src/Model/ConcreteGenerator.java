@@ -2,14 +2,14 @@ package Model;
 
 public class ConcreteGenerator extends Generator {
 
-    private Constraint constraint; //aggiungi possibilità di aggiungere una lista di constraints todo
+    private Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints todo
     //todo aggiungi parametri
     private int maxGrandezza;
     private int minGrandezza;
 
 
     public ConcreteGenerator(GridGame egg, int dimension){
-        this.gg=gg;
+        this.gg=egg;
         this.dimension=dimension;
         egg.setDimension(dimension);
     }
@@ -38,7 +38,7 @@ public class ConcreteGenerator extends Generator {
     @Override
     public void addConstraints() {
         //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
-        constraint = new Cage();
+        //constraint = new Cage();
         while(true){
             CellIF nextCell = nextPoint();
             if(nextCell==null) break; //abbiamo finito

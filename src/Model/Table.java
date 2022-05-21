@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Table implements GridGame {
@@ -22,6 +24,11 @@ public class Table implements GridGame {
 
     @Override //todo, forse ci sarà da aggiustare qualcosa per la parte grafica
     public boolean addValue(int val, int x, int y) {
+        //stampe di prova.
+        System.out.println(this);
+        System.out.println();
+        System.out.println(this.constrString());
+        System.out.println(val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
         return (val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
     }
 
@@ -138,6 +145,17 @@ public class Table implements GridGame {
             }
         }
         return sb.toString();
+    }
+
+    public List<Constraint> listOfConstraint(){
+        List<Constraint> list = new LinkedList<>();
+        for(int i=0; i<dimension; i++){
+            for(int j=0; j<dimension; j++){
+                if(!(list.contains(getConstraint(i,j))))
+                    list.add(getConstraint(i,j));
+            }
+        }
+        return list;
     }
 
     private class Cell implements CellIF {

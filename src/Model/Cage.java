@@ -5,8 +5,6 @@ import java.util.List;
 
 public class Cage extends Constraint{
 
-    private int id;
-    private static int nextId=0;
     private Operation op;
     private List<CellIF> cells;
     private int result;
@@ -123,7 +121,7 @@ public class Cage extends Constraint{
     public Constraint clone() {
         Cage c = (Cage) super.clone();
         c.cells = new LinkedList<>();
-        c.id=nextId++;
+        //id=nextId++;
         return c;
     }
 

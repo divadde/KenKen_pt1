@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.List;
+
 public interface GridGame {
 
     boolean addValue(int val, int x, int y);
@@ -15,4 +17,5 @@ public interface GridGame {
     void switchRow(int i, int j);
     void switchColumn(int i, int j);
     String constrString();
+    List<Constraint> listOfConstraint();
 }
