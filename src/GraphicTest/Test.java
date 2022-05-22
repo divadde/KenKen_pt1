@@ -13,16 +13,19 @@ public class Test {
 
         JFrame f = new JFrame("KenKen");
         GridGame gg = new Table();
-        Generator g = new ConcreteGenerator(gg,3);
+        Generator g = new ConcreteGenerator(gg,6);
         g.generate();
-        SupportPanel support = new SupportPanel(gg);
-        f.add(support);
-        //f.setResizable(false);
+        FlipPanel flip = new FlipPanel(gg);
+        Menu menuGioco = new Menu(flip);
+        f.add(flip);
+        f.setJMenuBar(menuGioco);
+        f.setResizable(false); //todo se puoi rendila variabile
         //f.pack();
         f.setSize(800,570);
         f.setLocation(350,100);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //in realtà nel programma dovremmo dare la possibilità di salvare la partita
         f.setVisible(true);
+
     }
 
 }

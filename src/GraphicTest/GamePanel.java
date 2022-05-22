@@ -25,7 +25,7 @@ public class GamePanel extends JPanel {
         //constrColour = new HashMap<>();
         setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
         setSize(400,400);
-        setLocation(100,80);
+        setLocation(100,100);
         int n=0;
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++) {
@@ -37,9 +37,9 @@ public class GamePanel extends JPanel {
                     n=(n+1)%10;
                 }
                 gc.setBackground(constrColour.get(gg.getConstraint(i,j)));
-                */
+                *///non funziona todo
                 if(constr.contains(gg.getConstraint(i,j))){
-                    gc.add(new JLabel("x"));
+                    gc.isDrawCell();
                     constr.remove(gg.getConstraint(i,j));
                 }
             }
@@ -68,8 +68,11 @@ public class GamePanel extends JPanel {
     //todo non va bene questa struttura di cella e tabella. Devo avere la possibilità di riferirmi solo alla tabella!
     private class GameCell extends JTextField implements ActionListener {
         private int x, y;
+        private Constraint c;
+        private boolean drawCell=false;
 
         public GameCell(int x, int y){
+            this.c=gg.getConstraint(x,y);
             this.x=x;
             this.y=y;
             addActionListener(this);
@@ -78,10 +81,19 @@ public class GamePanel extends JPanel {
             this.setFont(new Font("Ariel",1,20));
         }
 
+        public void isDrawCell(){
+            drawCell=true;
+        }
+
         @Override
-        public void paintComponents(Graphics g) {
-            super.paintComponents(g);
-            //todo
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if(drawCell) {
+                Font font = new Font("Arial", Font.PLAIN, 16);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setFont(font);
+                g2d.drawString(c.toString(), 7, 20);
+            }
         }
 
         private void drawBoarder(int x, int y){

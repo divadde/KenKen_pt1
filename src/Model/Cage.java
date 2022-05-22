@@ -147,14 +147,14 @@ public class Cage extends Constraint{
 
     public String toString(){
         if(op.equals(Operation.ADDIZIONE)){
-            return "["+result+"+|"+id+"|]";
+            return result+"+";
         }
         if(op.equals(Operation.SOTTRAZIONE)){
-            return "["+result+"-|"+id+"|]";
+            return result+"-";
         }
         if(op.equals(Operation.MOLTIPLICAZIONE)){
-            return "["+result+"x|"+id+"|]";
+            return result+"x";
         }
-        return "["+result+"/|"+id+"|]";
+        return result+"/";
     }
 }
