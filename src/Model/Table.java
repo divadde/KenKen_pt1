@@ -38,6 +38,24 @@ public class Table implements GridGame {
     }
 
     @Override
+    public boolean isLegal(int val, int x, int y){
+        boolean ret = addValue(val,x,y);
+        removeValue(x,y);
+        return ret;
+    }
+
+    @Override
+    public boolean isCompleted(){
+        for(int i=0; i<dimension; i++){
+            for(int j=0; j<dimension; j++) {
+                if (!table[i][j].getState())
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void clean() {
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
@@ -163,11 +181,17 @@ public class Table implements GridGame {
         private int x;
         private int y;
         private Constraint cage;
+        private boolean state;
 
         public Cell(int x, int y) {
             this.x = x;
             this.y = y;
             value = 0;
+            state=false;
+        }
+
+        public boolean getState(){
+            return state;
         }
 
         @Override
@@ -199,8 +223,9 @@ public class Table implements GridGame {
         public boolean setValue(int value) {
             this.value = value;
             if (cage != null)
-                return cage.verify();
-            return true;
+                state=cage.verify();
+            state=true;
+            return state;
         }
 
         @Override

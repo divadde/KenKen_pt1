@@ -15,7 +15,7 @@ public class SupportPanel extends JPanel implements ActionListener {
         this.father=father;
         setLayout(null);
         add(new GamePanel(gg));
-        add(new BacktrackingPanel());
+        add(new BacktrackingPanel(gg));
         esci=new JButton("Esci");
         add(esci);
         esci.setSize(100,50);

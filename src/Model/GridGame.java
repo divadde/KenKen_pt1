@@ -5,6 +5,8 @@ import java.util.List;
 public interface GridGame {
 
     boolean addValue(int val, int x, int y);
+    boolean isLegal(int val, int x, int y);
+    boolean isCompleted();
     void removeValue(int x, int y);
     void clean();
 
