@@ -1,5 +1,8 @@
 package Model;
 
+import Generating.ConcreteGenerator;
+import Generating.Generator;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -217,14 +220,15 @@ public class Table implements GridGame {
         @Override
         public void clean() {
             value = 0;
+            state = false;
         }
 
         @Override
         public boolean setValue(int value) {
             this.value = value;
+            state=true;
             if (cage != null)
                 state=cage.verify();
-            state=true;
             return state;
         }
 

@@ -6,8 +6,8 @@ public abstract class Constraint implements Cloneable {
     protected int id;
     protected static int nextId=0;
 
-    abstract void addCell(CellIF ec);
-    abstract void setValues();
+    public abstract void addCell(CellIF ec);
+    public abstract void setValues();
     @Override
     public Constraint clone() {
         try {
@@ -17,7 +17,8 @@ public abstract class Constraint implements Cloneable {
             throw new Error(e);
         }
     }
-    abstract boolean verify();
+
+    public abstract boolean verify();
 
     public int getId(){
         return id;

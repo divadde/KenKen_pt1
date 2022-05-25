@@ -1,4 +1,6 @@
-package Model;
+package Generating;
+
+import Model.GridGame;
 
 //template method
 public abstract class Generator {

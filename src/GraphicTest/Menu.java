@@ -6,12 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JMenuBar implements ActionListener {
-    private FlipPanel flip;
+    private MainPanel mp;
     private JMenu gioca, impostazioni, help;
     private JMenuItem nuovaPartita, caricaPartita;
 
-    public Menu(FlipPanel flip){
-        this.flip=flip;
+    public Menu(MainPanel flip){
+        this.mp=mp;
         gioca = new JMenu("Gioca");
         impostazioni = new JMenu("Impostazioni");
         help = new JMenu("Help");
@@ -28,8 +28,8 @@ public class Menu extends JMenuBar implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==nuovaPartita){
-            CardLayout c = (CardLayout) flip.getLayout();
-            c.show(flip,"game");
+            CardLayout c = (CardLayout) mp.getLayout();
+            c.show(mp,"game");
         }
     }
 }

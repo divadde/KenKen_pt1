@@ -1,4 +1,6 @@
-package Model;
+package Generating;
+
+import Model.*;
 
 public class ConcreteGenerator extends Generator {
 

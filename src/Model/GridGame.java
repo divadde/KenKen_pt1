@@ -1,5 +1,8 @@
 package Model;
 
+import Generating.ConcreteGenerator;
+import Generating.Generator;
+
 import java.util.List;
 
 public interface GridGame {
@@ -20,4 +23,9 @@ public interface GridGame {
     void switchColumn(int i, int j);
     String constrString();
     List<Constraint> listOfConstraint();
+
+    default Generator getGenerator(){
+        return new ConcreteGenerator(this,getDimension());
+    }
+    
 }

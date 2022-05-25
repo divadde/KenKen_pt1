@@ -4,17 +4,18 @@ import Backtracking.Solver;
 import Model.GridGame;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BacktrackingPanel extends JPanel implements ActionListener {
     private JButton solverButton;
     private JButton next, previous;
-    private Solver<int[],Integer> solver;
+    private Solver solver;
+    private GridPanel gp;
 
-    public BacktrackingPanel(GridGame gg){
-        solver= new Solver(gg);
+    public BacktrackingPanel(GridGame gg, GridPanel gp){
+        this.gp=gp;
+        solver= new Solver(gg,gp);
         setLayout(null);
         solverButton=new JButton("Mostra soluzioni");
         solverButton.setSize(140,30);
@@ -26,6 +27,7 @@ public class BacktrackingPanel extends JPanel implements ActionListener {
         previous.setSize(60,30);
         previous.setLocation(0,40);
         add(solverButton); add(next); add(previous);
+        solverButton.addActionListener(this);
         next.setEnabled(false);
         previous.setEnabled(false);
         setSize(200,200);
