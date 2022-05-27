@@ -1,10 +1,11 @@
 package Backtracking;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
+import Model.CellIF;
+import Model.GridGame;
 
-public abstract class Backtracking<P,S> {
+import java.util.*;
+
+public abstract class Backtracking<P, S> { //iterable deve essere parametrico?
 
     protected abstract boolean assegnabile( P p, S s );
     protected abstract void assegna( P ps, S s );
@@ -17,7 +18,7 @@ public abstract class Backtracking<P,S> {
         return ps.get(i+1);
     }//prossimoPuntoDiScelta
 
-    protected boolean esisteSoluzione( P p ) {
+    protected boolean esisteSoluzione(P p ) {
         return false;
     }//esisteSoluzione
 
@@ -43,5 +44,10 @@ public abstract class Backtracking<P,S> {
     }//tentativo
 
     public abstract void risolvi();
+
+
+    public abstract CellIF[][] nextSol();
+    public abstract CellIF[][] prevSol();
+
 
 }//Backtracking

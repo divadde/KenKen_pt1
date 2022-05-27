@@ -1,6 +1,7 @@
 package GraphicTest;
 
 import Backtracking.Solver;
+import Command.*;
 import Model.GridGame;
 
 import javax.swing.*;
@@ -10,12 +11,12 @@ import java.awt.event.ActionListener;
 public class BacktrackingPanel extends JPanel implements ActionListener {
     private JButton solverButton;
     private JButton next, previous;
-    private Solver solver;
     private GridPanel gp;
+    private Command mostraSoluzione, prossimaSoluzione, precSoluzione;
+
 
     public BacktrackingPanel(GridGame gg, GridPanel gp){
         this.gp=gp;
-        solver= new Solver(gg,gp);
         setLayout(null);
         solverButton=new JButton("Mostra soluzioni");
         solverButton.setSize(140,30);
@@ -28,16 +29,28 @@ public class BacktrackingPanel extends JPanel implements ActionListener {
         previous.setLocation(0,40);
         add(solverButton); add(next); add(previous);
         solverButton.addActionListener(this);
-        next.setEnabled(false);
-        previous.setEnabled(false);
+        prossimaSoluzione = new NextSolutionCommand(gg);
+        precSoluzione = new PreviousSolutionCommand(gg);
+        next.setEnabled(true);
+        previous.setEnabled(true);
+        next.addActionListener(this);
+        previous.addActionListener(this);
         setSize(200,200);
         setLocation(600,400);
+        mostraSoluzione = new SolveCommand(gg);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==solverButton){
-            solver.risolvi();
+            mostraSoluzione.execute();
+            prossimaSoluzione.execute();
+        }
+        if(e.getSource()==next){
+            prossimaSoluzione.execute();
+        }
+        if(e.getSource()==previous){
+            precSoluzione.execute();
         }
     }
 

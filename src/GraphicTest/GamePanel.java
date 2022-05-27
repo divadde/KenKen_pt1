@@ -1,5 +1,8 @@
 package GraphicTest;
 
+import Command.Command;
+import Command.NewGameCommand;
+import Generating.Generator;
 import Model.GridGame;
 
 import javax.swing.*;
@@ -9,34 +12,51 @@ import java.awt.event.ActionListener;
 
 public class GamePanel extends JPanel implements ActionListener {
     private GridGame gg;
-    private MainPanel father;
     private GridPanel gp;
-    private JButton esci;
+    private Menu m;
+    private JButton nuovaPartita;
 
-    public GamePanel(GridGame gg, MainPanel father){
+
+    public GamePanel(GridGame gg, Menu m,Mediator mediator){
+        this.m=m;
         setSize(800,570);
         setLayout(null);
-        this.father=father;
+        nuovaPartita=new JButton("nuova partita");
+        nuovaPartita.setLocation(100,100);
+        nuovaPartita.setSize(200,50);
+        nuovaPartita.addActionListener(this);
+        add(nuovaPartita);
         this.gg=gg;
-        this.gp=new GridPanel(gg);
+        this.gp=new GridPanel(gg,mediator);
         add(gp);
+        //todo capisci perché al primo colpo non rileva i constraint!
+        /*Generator g = gg.getGenerator();
+        g.generate();
+
+         */
+        /*
+        new NewGameCommand(gg).execute();
+        gp.configura();
+        */
+
         add(new BacktrackingPanel(gg,gp));
-        esci=new JButton("Esci");
-        add(esci);
-        esci.setSize(100,50);
-        esci.setLocation(600,50);
-        esci.addActionListener(this);
         //setSize(800,800);
         //setLocation(200,200);
     }
 
+    public GridGame getGridGame(){
+        return gg;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==esci){
-            CardLayout c = (CardLayout) father.getLayout();
-            c.show(father,"start");
+        if(e.getSource()==m.getNuovaPartita()) {
+            nuovaPartita.setVisible(false);
+            gp.configura();
         }
-        if(e.getSource()==father.getStartPanel().getNuovaPartita()) {
+        if(e.getSource()==nuovaPartita){
+            new NewGameCommand(gg).execute();
+            nuovaPartita.setVisible(false);
             gp.configura();
         }
     }

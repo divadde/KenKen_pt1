@@ -11,9 +11,13 @@ public class WindowGame extends JFrame {
 
     public WindowGame(String title, GridGame gg){
         setTitle(title);
-        MainPanel mp = new MainPanel(gg);
-        Menu m = new Menu(mp);
-        add(mp);
+        Mediator mediator = new Mediator();
+        gg.setMediator(mediator);
+        mediator.setGridGame(gg);
+        Menu m = new Menu();
+        GamePanel gp = new GamePanel(gg,m,mediator);
+        m.setGamePanel(gp);
+        add(gp);
         setJMenuBar(m);
         setResizable(false); //todo se puoi rendila variabile
         //pack();

@@ -1,72 +1,71 @@
 package Backtracking;
 
-import GraphicTest.GridPanel;
 import Model.CellIF;
 import Model.GridGame;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import java.awt.event.ActionEvent;
-
-public class Solver extends Backtracking<int[],Integer>{
+public final class Solver extends Backtracking<CellIF,Integer>{
+    private static Solver INSTANCE=null;
+    private int sol;
     private GridGame gg;
-    private GridPanel gp;
+    private List<CellIF[][]> tabelleComplete;
+    private ListIterator<CellIF[][]> lit;
 
-    public Solver(GridGame gg, GridPanel gp){
+    private Solver(GridGame gg){
         this.gg=gg;
-        this.gp=gp;
+        tabelleComplete=new LinkedList<>();
+        lit=tabelleComplete.listIterator();
     }
 
+    public static synchronized Solver getInstance(GridGame gg){
+        if(INSTANCE==null){
+            INSTANCE=new Solver(gg);
+        }
+        return INSTANCE;
+    }
 
     @Override
-    protected boolean esisteSoluzione(int[] ints) {
+    protected boolean esisteSoluzione(CellIF cell) {
         return gg.isCompleted();
     }
 
     @Override
-    protected boolean assegnabile(int[] ints, Integer integer) {
-        return gg.isLegal(integer, ints[0], ints[1]);
+    protected boolean assegnabile(CellIF cell, Integer integer) {
+        return gg.isLegal(integer, cell.getX(), cell.getY());
     }
 
     @Override
-    protected void assegna(int[] ps, Integer integer) {
-        gg.addValue(integer, ps[0], ps[1]);
+    protected void assegna(CellIF cell, Integer integer) {
+        gg.addValue(integer, cell.getX(), cell.getY());
+        System.out.println("Aggiunto a "+cell.getX()+","+cell.getY()+" il valore "+integer);
     }
 
     @Override
-    protected void deassegna(int[] ps, Integer integer) {
-        gg.removeValue(ps[0], ps[1]);
+    protected void deassegna(CellIF cellIF, Integer integer) {
+        gg.removeValue(cellIF.getX(), cellIF.getY());
     }
 
     @Override
-    protected void scriviSoluzione(int[] ints) {
-        System.out.println("Soluzione trovata!");
-        for(int i=0; i< gg.getDimension(); i++){
-            for(int j=0; j<gg.getDimension(); j++){
-                CellIF cell = gg.getCell(i,j);
-                gp.getGameCell(i,j).setText(Integer.toString(cell.getValue()));
-                gp.getGameCell(i,j).actionPerformed(new ActionEvent(new Object(),1,"boh"));
-            }
-        }
+    protected void scriviSoluzione(CellIF cell) {
+        tabelleComplete.add(gg.getTable());
+        sol++;
+        System.out.println("Soluzione "+sol+" trovata!");
     }
 
     @Override
-    protected List<int[]> puntiDiScelta() {
-        LinkedList<int[]> coordinate = new LinkedList<>();
+    protected List<CellIF> puntiDiScelta() {
+        LinkedList<CellIF> celle = new LinkedList<>();
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++){
-                int[] coord = new int[2];
-                coord[0]=i; coord[1]=j;
-                coordinate.addLast(coord);
+                celle.addLast(gg.getCell(i,j));
             }
         }
-        return coordinate;
+        return celle;
     }
 
     @Override
-    protected Collection<Integer> scelte(int[] p) {
+    protected Collection<Integer> scelte(CellIF cell) {
         LinkedList<Integer> possScelte = new LinkedList<>();
         for(int i=0; i<gg.getDimension(); i++){
             possScelte.addLast(i+1);
@@ -76,7 +75,35 @@ public class Solver extends Backtracking<int[],Integer>{
 
     @Override
     public void risolvi() {
+        tabelleComplete=new LinkedList<>();
+        sol=0;
+        //lit=tabelleComplete.listIterator();
         tentativo(puntiDiScelta(),puntiDiScelta().get(0));
+        System.out.println("Soluzioni trovate: "+sol);
+        for(CellIF[][] soluzione: tabelleComplete){
+            gg.setTable(soluzione);
+            System.out.println(gg.toString());
+        }
+        System.out.println(tabelleComplete.size());
+        lit=tabelleComplete.listIterator();
     }
+
+
+    @Override
+    public CellIF[][] nextSol() {
+        //lit=tabelleComplete.listIterator();
+        if(lit.hasNext())
+            return lit.next();
+        return null;
+    }
+
+    @Override
+    public CellIF[][] prevSol() {
+        //lit=tabelleComplete.listIterator();
+        if(lit.hasPrevious())
+            return lit.previous();
+        return null;
+    }
+
 
 }

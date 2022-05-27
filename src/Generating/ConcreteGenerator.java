@@ -16,6 +16,13 @@ public class ConcreteGenerator extends Generator {
         egg.setDimension(dimension);
     }
 
+    /*
+    @Override
+    public Generator factoryMethod(GridGame gg, int dimension) {
+        return new ConcreteGenerator(gg,dimension);
+    }
+     */
+
     @Override
     public void insertNumbers() {
         for(int i=0; i<dimension; i++){

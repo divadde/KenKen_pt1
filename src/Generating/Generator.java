@@ -15,6 +15,7 @@ public abstract class Generator {
         eraseNumbers();
     }
 
+//    public abstract Generator factoryMethod(GridGame gg, int dimension);
     public abstract void insertNumbers();
     public abstract void shuffleNumbers();
     public abstract void addConstraints();

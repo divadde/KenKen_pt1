@@ -2,7 +2,9 @@ package Model;
 
 import Generating.ConcreteGenerator;
 import Generating.Generator;
+import GraphicTest.Mediator;
 
+import javax.print.attribute.standard.Media;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,6 +12,7 @@ import java.util.Scanner;
 public class Table implements GridGame {
     private static int dimension;
     private static Cell[][] table;
+    private Mediator mediator;
 
     public Table() {}
 
@@ -25,13 +28,46 @@ public class Table implements GridGame {
     }
     */
 
+    @Override
+    public void setMediator(Mediator mediator) {
+        this.mediator = mediator;
+    }
+
+    @Override
+    public Mediator getMediator(){
+        return mediator;
+    }
+
+    //copia profonda
+    @Override
+    public CellIF[][] getTable(){
+        Cell[][] ret = new Cell[dimension][dimension];
+        for(int i=0; i<dimension; i++){
+            for(int j=0; j<dimension; j++)
+                ret[i][j] = new Cell(table[i][j]);
+        }
+        return ret;
+    }
+
+    @Override
+    public void setTable(CellIF[][] table){
+        clean();
+        for(int i=0; i<dimension; i++){
+            for(int j=0; j<dimension; j++){
+                addValue(table[i][j].getValue(),table[i][j].getX(),table[i][j].getY());
+            }
+        }
+    }
+
     @Override //todo, forse ci sarà da aggiustare qualcosa per la parte grafica
     public boolean addValue(int val, int x, int y) {
         //stampe di prova.
+        /*
         System.out.println(this);
         System.out.println();
         System.out.println(this.constrString());
         System.out.println(val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
+        */
         return (val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
     }
 
@@ -191,6 +227,13 @@ public class Table implements GridGame {
             this.y = y;
             value = 0;
             state=false;
+        }
+
+        //costruttore per copia, è sufficiente memorizzare posizione e valore //todo verifica correttezza
+        public Cell (Cell c){
+            this.x = c.getX();
+            this.y = c.getY();
+            this.value = c.getValue();
         }
 
         public boolean getState(){

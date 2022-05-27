@@ -1,5 +1,6 @@
 package GraphicTest;
 
+import Model.CellIF;
 import Model.Constraint;
 import Model.GridGame;
 
@@ -14,8 +15,11 @@ public class GridPanel extends JPanel {
     private GridGame gg;
     private List<Constraint> constr;
     private GameCell[][] grigliaGrafica;
+    private Mediator mediator;
 
-    public GridPanel(GridGame gg) {
+    public GridPanel(GridGame gg, Mediator mediator) {
+        this.mediator=mediator;
+        this.mediator.setGridPanel(this);
         this.gg=gg;
         setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
         setSize(400,400);
@@ -32,12 +36,21 @@ public class GridPanel extends JPanel {
                 grigliaGrafica[i][j] = new GameCell(i,j);
                 this.add(grigliaGrafica[i][j]);
                 if(constr.contains(gg.getConstraint(i,j))){
-                    System.out.println("Ciao");
                     grigliaGrafica[i][j].isDrawCell();
                     constr.remove(gg.getConstraint(i,j));
                 }
             }
         }
+    }
+
+    public void aggiornaValori(CellIF[][] table){
+        for(int i=0; i<gg.getDimension(); i++){
+            for(int j=0; j<gg.getDimension(); j++){
+                grigliaGrafica[i][j].setText(Integer.toString(table[i][j].getValue()));
+            }
+        }
+        repaint();
+        revalidate();
     }
 
     private void rimuoviCelle(){
@@ -112,9 +125,9 @@ public class GridPanel extends JPanel {
             String text = getText();
             try{
                 int value = Integer.parseInt(text);
-                if(!(gg.addValue(value,x,y)))
+                if(!(mediator.notifyGridGame(value,x,y)))
                     this.setBackground(new Color(220,80,80));
-                else if(gg.addValue(value,x,y) && this.getBackground().equals(new Color(220,80,80)))
+                else if(mediator.notifyGridGame(value,x,y) && this.getBackground().equals(new Color(220,80,80)))
                     this.setBackground(Color.WHITE);
                 System.out.println("modificata la cella "+x+","+y);
             } catch (NumberFormatException ex) {

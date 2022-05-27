@@ -1,7 +1,10 @@
 package Model;
 
+import Backtracking.Backtracking;
+import Backtracking.Solver;
 import Generating.ConcreteGenerator;
 import Generating.Generator;
+import GraphicTest.Mediator;
 
 import java.util.List;
 
@@ -17,6 +20,8 @@ public interface GridGame {
     Constraint getConstraint(int x, int y);
     void setCell(int value, int x, int y);
     CellIF getCell(int x, int y);
+    CellIF[][] getTable();
+    void setTable(CellIF[][] table);
     void setDimension(int n);
     int getDimension();
     void switchRow(int i, int j);
@@ -27,5 +32,12 @@ public interface GridGame {
     default Generator getGenerator(){
         return new ConcreteGenerator(this,getDimension());
     }
+
+    default Backtracking getBacktracking() {
+        return Solver.getInstance(this);
+    }
+
+    void setMediator(Mediator mediator);
+    Mediator getMediator();
     
 }
