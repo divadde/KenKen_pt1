@@ -21,7 +21,7 @@ public class NextSolutionCommand implements Command{
         CellIF[][] currSol = s.nextSol();
         if(currSol!=null) {
             gg.setTable(currSol);
-            gg.getMediator().notifyGridPanel(gg.getTable());
+            //gg.getMediator().notifyGridPanel(gg.getTable());
             System.out.println("NEXT SOLUTION");
         }
     }

@@ -105,5 +105,9 @@ public final class Solver extends Backtracking<CellIF,Integer>{
         return null;
     }
 
+    public int numSol(){
+        return tabelleComplete.size();
+    }
+
 
 }

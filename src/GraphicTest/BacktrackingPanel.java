@@ -9,13 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BacktrackingPanel extends JPanel implements ActionListener {
+    private GamePanel gp;
     private JButton solverButton;
     private JButton next, previous;
-    private GridPanel gp;
     private Command mostraSoluzione, prossimaSoluzione, precSoluzione;
 
 
-    public BacktrackingPanel(GridGame gg, GridPanel gp){
+    public BacktrackingPanel(GamePanel gp, GridGame gg){
         this.gp=gp;
         setLayout(null);
         solverButton=new JButton("Mostra soluzioni");
@@ -31,26 +31,34 @@ public class BacktrackingPanel extends JPanel implements ActionListener {
         solverButton.addActionListener(this);
         prossimaSoluzione = new NextSolutionCommand(gg);
         precSoluzione = new PreviousSolutionCommand(gg);
-        next.setEnabled(true);
-        previous.setEnabled(true);
         next.addActionListener(this);
         previous.addActionListener(this);
         setSize(200,200);
         setLocation(600,400);
         mostraSoluzione = new SolveCommand(gg);
+        setVisible(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==gp.getNuovaPartita()){
+            setVisible(true);
+            next.setEnabled(false);
+            previous.setEnabled(false);
+        }
         if(e.getSource()==solverButton){
+            next.setEnabled(true);
+            previous.setEnabled(true);
             mostraSoluzione.execute();
             prossimaSoluzione.execute();
         }
         if(e.getSource()==next){
             prossimaSoluzione.execute();
+            gp.actionPerformed(new ActionEvent(this.next,0,"next"));
         }
         if(e.getSource()==previous){
             precSoluzione.execute();
+            gp.actionPerformed(new ActionEvent(this.previous,0,"previous"));
         }
     }
 

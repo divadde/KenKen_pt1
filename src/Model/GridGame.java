@@ -4,7 +4,6 @@ import Backtracking.Backtracking;
 import Backtracking.Solver;
 import Generating.ConcreteGenerator;
 import Generating.Generator;
-import GraphicTest.Mediator;
 
 import java.util.List;
 
@@ -36,8 +35,5 @@ public interface GridGame {
     default Backtracking getBacktracking() {
         return Solver.getInstance(this);
     }
-
-    void setMediator(Mediator mediator);
-    Mediator getMediator();
     
 }

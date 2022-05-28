@@ -49,5 +49,7 @@ public abstract class Backtracking<P, S> { //iterable deve essere parametrico?
     public abstract CellIF[][] nextSol();
     public abstract CellIF[][] prevSol();
 
+    public abstract int numSol();
+
 
 }//Backtracking

@@ -10,13 +10,13 @@ public class WindowGame extends JFrame {
 
     public WindowGame(String title, GridGame gg){
         setTitle(title);
-        Mediator mediator = new Mediator();
-        gg.setMediator(mediator);
         Menu m = new Menu();
-        GamePanel gp = new GamePanel(gg,m,mediator);
+        GamePanel gp = new GamePanel(gg,m);
         m.setGamePanel(gp);
         add(gp);
         setJMenuBar(m);
+
+
         setResizable(false); //todo se puoi rendila variabile
         //pack();
         setSize(800,570);
@@ -24,4 +24,5 @@ public class WindowGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //in realtà nel programma dovremmo dare la possibilità di salvare la partita
         setVisible(true);
     }
+
 }

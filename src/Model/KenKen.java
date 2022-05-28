@@ -1,17 +1,11 @@
 package Model;
 
-import Generating.ConcreteGenerator;
-import Generating.Generator;
-import GraphicTest.Mediator;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 public final class KenKen implements GridGame {
     private static int dimension;
     private static Cell[][] table;
-    private Mediator mediator;
 
     public KenKen() {}
 
@@ -27,16 +21,6 @@ public final class KenKen implements GridGame {
     }
     */
 
-    @Override
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
-        mediator.setGridGame(this);
-    }
-
-    @Override
-    public Mediator getMediator(){
-        return mediator;
-    }
 
     //copia profonda
     @Override

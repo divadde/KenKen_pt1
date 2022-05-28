@@ -41,6 +41,7 @@ public class Menu extends JMenuBar implements ActionListener {
     public JMenuItem getNuovaPartita(){
         return nuovaPartita;
     }
+    public JMenuItem getCaricaPartita(){ return caricaPartita; }
 
     @Override
     public void actionPerformed(ActionEvent e) {

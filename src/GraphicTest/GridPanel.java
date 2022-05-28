@@ -1,5 +1,6 @@
 package GraphicTest;
 
+import Command.NewGameCommand;
 import Model.CellIF;
 import Model.Constraint;
 import Model.GridGame;
@@ -11,15 +12,14 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 
-public class GridPanel extends JPanel {
-    private GridGame gg;
+public class GridPanel extends JPanel implements ActionListener {
+    private GamePanel gp; //riferimento al padre
+    private GridGame gg; //riferimento alla parte logica
     private List<Constraint> constr;
     private GameCell[][] grigliaGrafica;
-    private Mediator mediator;
 
-    public GridPanel(GridGame gg, Mediator mediator) {
-        this.mediator=mediator;
-        this.mediator.setGridPanel(this);
+    public GridPanel(GamePanel gp, GridGame gg) {
+        this.gp=gp;
         this.gg=gg;
         setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
         setSize(400,400);
@@ -43,10 +43,10 @@ public class GridPanel extends JPanel {
         }
     }
 
-    public void aggiornaValori(CellIF[][] table){
+    public void aggiornaValori(){
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++){
-                grigliaGrafica[i][j].setText(Integer.toString(table[i][j].getValue()));
+                grigliaGrafica[i][j].setText(Integer.toString(gg.getTable()[i][j].getValue()));
             }
         }
         repaint();
@@ -62,13 +62,25 @@ public class GridPanel extends JPanel {
         }
     }
 
-    public GameCell getGameCell(int i, int j){
-        return grigliaGrafica[i][j];
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==gp.getNuovaPartita()){
+            new NewGameCommand(gg).execute();
+            configura();
+            repaint();
+            revalidate();
+        }
+        if(e.getActionCommand().equals("next")){
+            aggiornaValori();
+        }
+        if(e.getActionCommand().equals("previous")){
+            aggiornaValori();
+        }
     }
 
 
     //todo non va bene questa struttura di cella e tabella. Devo avere la possibilità di riferirmi solo alla tabella!
-    public class GameCell extends JTextField implements ActionListener {
+    private class GameCell extends JTextField implements ActionListener {
         private int x, y;
         private Constraint c;
         private boolean drawCell=false;
@@ -125,9 +137,9 @@ public class GridPanel extends JPanel {
             String text = getText();
             try{
                 int value = Integer.parseInt(text);
-                if(!(mediator.notifyGridGame(value,x,y)))
+                if(!(gg.addValue(value, x, y)))
                     this.setBackground(new Color(220,80,80));
-                else if(mediator.notifyGridGame(value,x,y) && this.getBackground().equals(new Color(220,80,80)))
+                else if(gg.addValue(value, x, y) && this.getBackground().equals(new Color(220,80,80)))
                     this.setBackground(Color.WHITE);
                 System.out.println("modificata la cella "+x+","+y);
             } catch (NumberFormatException ex) {
