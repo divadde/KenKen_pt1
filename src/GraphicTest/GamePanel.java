@@ -54,6 +54,7 @@ public class GamePanel extends JPanel implements ActionListener {
         if(e.getSource()==menu.getNuovaPartita() || e.getSource()==nuovaPartita) {
             nuovaPartita.setVisible(false);
             caricaPartita.setVisible(false);
+            menu.getSalvaPartita().setEnabled(true);
             //backtrackingPanel.setVisible(true);
             //demanda al gridpanel
             gp.actionPerformed(new ActionEvent(this.nuovaPartita,0,"nuovaPartita"));
@@ -69,11 +70,21 @@ public class GamePanel extends JPanel implements ActionListener {
             backtrackingPanel.actionPerformed(new ActionEvent(this.nuovaPartita,0,"nuovaPartita"));
              */
         }
+        if(e.getSource()==menu.getSalvaPartita()) {
+            /*
+            //demanda al gridpanel
+            gp.actionPerformed(new ActionEvent(this.nuovaPartita,0,"nuovaPartita"));
+            backtrackingPanel.actionPerformed(new ActionEvent(this.nuovaPartita,0,"nuovaPartita"));
+             */
+        }
         if(e.getActionCommand().equals("next")){
             gp.actionPerformed(e);
         }
         if(e.getActionCommand().equals("previous")){
             gp.actionPerformed(e);
+        }
+        if(e.getSource()== menu.getImpostaDimensione()){
+            gp.actionPerformed(new ActionEvent(this,0,"newDimension"));
         }
     }
 }

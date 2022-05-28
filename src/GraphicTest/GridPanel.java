@@ -76,6 +76,21 @@ public class GridPanel extends JPanel implements ActionListener {
         if(e.getActionCommand().equals("previous")){
             aggiornaValori();
         }
+        if(e.getActionCommand().equals("newDimension")){
+            int dimensione;
+            while(true) {
+                String mess = JOptionPane.showInputDialog("Imposta la dimensione del KenKen");
+                try {
+                    dimensione=Integer.parseInt(mess);
+                    break;
+                } catch(RuntimeException ex){
+                    JOptionPane.showMessageDialog(null,"Inserire un intero");
+                }
+            }
+            gg.setDimension(dimensione);
+            setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
+            gp.actionPerformed(new ActionEvent(gp.getNuovaPartita(),0,"nuovaPartita"));
+        }
     }
 
 
