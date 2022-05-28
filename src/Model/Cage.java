@@ -127,9 +127,20 @@ public class Cage extends Constraint{
 
     @Override
     public boolean verify() {
+        if (!arePositive(getValues(cells)) || (arePositive(getValues(cells)) && result == op.doOp(getValues(cells))))
+            validaCelle(true);
+        else if (arePositive(getValues(cells)) && !(result == op.doOp(getValues(cells))))
+            validaCelle(false);
         return !arePositive(getValues(cells)) || result == op.doOp(getValues(cells));
     }
 
+    public void validaCelle(boolean state){
+        for(CellIF cell: cells) {
+            cell.setCageState(state);
+        }
+    }
+
+    //ritorna true se tutte le celle contengono numeri positivi
     private boolean arePositive(List<Integer> l){
         for(Integer i: l){
             if(i<1) return false;

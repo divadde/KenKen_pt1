@@ -45,14 +45,12 @@ public final class KenKen implements GridGame {
 
     @Override //todo, forse ci sarà da aggiustare qualcosa per la parte grafica
     public boolean addValue(int val, int x, int y) {
-        //stampe di prova.
-        /*
-        System.out.println(this);
-        System.out.println();
-        System.out.println(this.constrString());
-        System.out.println(val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
-        */
-        return (val >= 1 && val <= dimension && table[x][y].setValue(val) && verify(val, x, y));
+        table[x][y].setValue(val);
+        return table[x][y].getState();
+    }
+
+    private boolean verifyNumber(int val){
+        return val>=1 && val<=dimension;
     }
 
     @Override
@@ -125,14 +123,19 @@ public final class KenKen implements GridGame {
     }
 
     //todo forse sarà utile se vogliamo introdurre un oggetto Constraint (per esempio un oggetto che regola la presenza di ripetizioni all'interno di una riga)
-    private boolean verify(int val, int x, int y) {
+    private List<Cell> verify(int val, int x, int y) {
+        List<Cell> ret = new LinkedList<>();
         Cell[] row = getRow(x);
         Cell[] column = getColumn(y);
         for (int i = 0; i < dimension; i++) {
-            if (i != y && val == table[x][i].getValue()) return false;
-            if (i != x && val == table[i][y].getValue()) return false;
+            if (i != y && val == table[x][i].getValue()) {
+                ret.add(table[x][i]);
+            }
+            if (i != x && val == table[i][y].getValue()) {
+                ret.add(table[i][y]);
+            }
         }
-        return true;
+        return ret;
     }
 
     private Cell[] getRow(int x) {
@@ -150,9 +153,7 @@ public final class KenKen implements GridGame {
     @Override
     public void switchRow(int i, int j) {
         for (int n = 0; n < dimension; n++) {
-            int tmp = table[i][n].getValue();
-            table[i][n].setValue(table[j][n].getValue());
-            table[j][n].setValue(tmp);
+            table[i][n].switchValue(table[j][n]);
         }
     }
 
@@ -160,9 +161,7 @@ public final class KenKen implements GridGame {
     @Override
     public void switchColumn(int i, int j) {
         for (int n = 0; n < dimension; n++) {
-            int tmp = table[n][i].getValue();
-            table[n][i].setValue(table[n][j].getValue());
-            table[n][j].setValue(tmp);
+            table[n][i].switchValue(table[n][j]);
         }
     }
 
@@ -204,13 +203,26 @@ public final class KenKen implements GridGame {
         private int x;
         private int y;
         private Constraint cage;
-        private boolean state;
+        private boolean stateKenKen;
+        private boolean stateCage;
+        private List<Cell> inContrast;
 
         public Cell(int x, int y) {
+            inContrast=new LinkedList<>();
             this.x = x;
             this.y = y;
             value = 0;
-            state=false;
+            stateKenKen=false;
+            stateCage=false;
+        }
+
+        public void switchValue(Cell c){
+            int tmp=this.value;
+            this.value=c.getValue();
+            c.setValueNoControl(tmp);
+        }
+        private void setValueNoControl(int x){
+            value=x;
         }
 
         //costruttore per copia, è sufficiente memorizzare posizione e valore //todo verifica correttezza
@@ -220,8 +232,22 @@ public final class KenKen implements GridGame {
             this.value = c.getValue();
         }
 
+        public void addInContrast(Cell c){
+            inContrast.add(c);
+        }
+        public void removeInContrast(Cell c){
+            inContrast.remove(c);
+        }
+
         public boolean getState(){
-            return state;
+            return stateKenKen && stateCage;
+        }
+
+        public void setKenKenState(boolean state){
+            stateKenKen=state;
+        }
+        public void setCageState(boolean state){
+            stateCage=state;
         }
 
         @Override
@@ -247,16 +273,37 @@ public final class KenKen implements GridGame {
         @Override
         public void clean() {
             value = 0;
-            state = false;
+            stateKenKen=false;
+            stateCage=false;
         }
 
         @Override
         public boolean setValue(int value) {
             this.value = value;
-            state=true;
+            List<Cell> ver = verify(value,x,y);
+            for(Cell c : ver){
+                if(!(inContrast.contains(c))){
+                    c.setKenKenState(false);
+                    c.addInContrast(this);
+                    addInContrast(c);
+                }
+            }
+            List<Cell> daEliminare = new LinkedList<Cell>();
+            for(Cell c: inContrast){
+                if(!(ver.contains(c))){
+                    c.removeInContrast(this);
+                    c.setKenKenState(c.inContrast.isEmpty());
+                    daEliminare.add(c);
+                }
+            }
+            inContrast.removeAll(daEliminare);
+            if(!verifyNumber(value))
+                this.value=0;
+            stateKenKen=verifyNumber(value) && inContrast.isEmpty();
+            stateCage=true;
             if (cage != null)
-                state=cage.verify();
-            return state;
+                stateCage=cage.verify();
+            return stateKenKen && stateCage;
         }
 
         @Override

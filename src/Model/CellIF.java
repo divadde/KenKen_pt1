@@ -2,6 +2,8 @@ package Model;
 
 public interface CellIF {
     boolean setValue(int value);
+    void setCageState(boolean state);
+    boolean getState();
     int getValue();
     void setX(int x);
     int getX();

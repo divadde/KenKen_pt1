@@ -42,6 +42,7 @@ public class GridPanel extends JPanel implements ActionListener {
                 }
             }
         }
+        coloraCelle();
     }
 
     public void aggiornaValori(){
@@ -50,6 +51,7 @@ public class GridPanel extends JPanel implements ActionListener {
                 grigliaGrafica[i][j].setText(Integer.toString(gg.getTable()[i][j].getValue()));
             }
         }
+        coloraCelle();
         repaint();
         revalidate();
     }
@@ -59,6 +61,21 @@ public class GridPanel extends JPanel implements ActionListener {
         for(int i=0; i<len; i++){
             for(int j=0; j<len; j++) {
                 this.remove(grigliaGrafica[i][j]);
+            }
+        }
+    }
+
+    private void coloraCelle(){
+        for(int i=0; i<gg.getDimension(); i++){
+            for(int j=0; j<gg.getDimension(); j++) {
+                if(gg.getCell(i,j).getValue()==0)
+                    grigliaGrafica[i][j].setBackground(new Color(255,255,255));
+                else {
+                    if (gg.getCell(i,j).getState())
+                        grigliaGrafica[i][j].setBackground(new Color(80, 220, 80));
+                    else
+                        grigliaGrafica[i][j].setBackground(new Color(220, 80, 80));
+                }
             }
         }
     }
@@ -160,14 +177,31 @@ public class GridPanel extends JPanel implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String text = getText();
             try{
-                int value = Integer.parseInt(text);
-                if(!(gg.addValue(value, x, y)))
-                    this.setBackground(new Color(220,80,80));
-                else if(gg.addValue(value, x, y) && this.getBackground().equals(new Color(220,80,80)))
+                if(text==null) {
+                    gg.removeValue(x,y);
+                }
+                else {
+                    int value = Integer.parseInt(text);
+                    gg.addValue(value, x, y);
+                }
+                coloraCelle();
+                System.out.println("modificata la cella " + x + "," + y);
+                System.out.println(gg.getCell(x, y).getState());
+                /*
+                boolean aggiunta = gg.addValue(value,x,y);
+                if(!aggiunta) {
+                    this.setBackground(new Color(220, 80, 80));
+                }
+                else if(aggiunta && this.getBackground().equals(new Color(220,80,80)))
                     this.setBackground(Color.WHITE);
                 System.out.println("modificata la cella "+x+","+y);
+                 */
             } catch (NumberFormatException ex) {
-                ex.printStackTrace();
+                gg.removeValue(x,y);
+                setText(null);
+                System.out.println("modificata la cella " + x + "," + y);
+                System.out.println(gg.getCell(x, y).getState());
+                this.setBackground(Color.WHITE);
             }
         }
     }
