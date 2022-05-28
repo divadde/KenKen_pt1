@@ -18,6 +18,7 @@ public class GridPanel extends JPanel implements ActionListener {
     private GridGame gg; //riferimento alla parte logica
     private List<Constraint> constr;
     private GameCell[][] grigliaGrafica;
+    private boolean suggerimentiEnabled;
 
     public GridPanel(GamePanel gp, GridGame gg) {
         this.gp=gp;
@@ -25,6 +26,7 @@ public class GridPanel extends JPanel implements ActionListener {
         setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
         setSize(400,400);
         setLocation(100,100);
+        suggerimentiEnabled=false;
     }
 
     public void configura(){
@@ -42,7 +44,8 @@ public class GridPanel extends JPanel implements ActionListener {
                 }
             }
         }
-        coloraCelle();
+        if(suggerimentiEnabled)
+            coloraCelle();
     }
 
     public void aggiornaValori(){
@@ -51,7 +54,8 @@ public class GridPanel extends JPanel implements ActionListener {
                 grigliaGrafica[i][j].setText(Integer.toString(gg.getTable()[i][j].getValue()));
             }
         }
-        coloraCelle();
+        if(suggerimentiEnabled)
+            coloraCelle();
         repaint();
         revalidate();
     }
@@ -76,6 +80,14 @@ public class GridPanel extends JPanel implements ActionListener {
                     else
                         grigliaGrafica[i][j].setBackground(new Color(220, 80, 80));
                 }
+            }
+        }
+    }
+
+    private void eliminaColori(){
+        for(int i=0; i<gg.getDimension(); i++) {
+            for (int j = 0; j < gg.getDimension(); j++) {
+                grigliaGrafica[i][j].setBackground(new Color(255,255,255));
             }
         }
     }
@@ -116,6 +128,13 @@ public class GridPanel extends JPanel implements ActionListener {
                 setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
                 gp.actionPerformed(new ActionEvent(gp.getNuovaPartita(), 0, "nuovaPartita"));
             }
+        }
+        if(e.getActionCommand()=="suggerimenti"){
+            suggerimentiEnabled = !suggerimentiEnabled;
+            if(suggerimentiEnabled)
+                coloraCelle();
+            else
+                eliminaColori();
         }
     }
 
@@ -184,7 +203,8 @@ public class GridPanel extends JPanel implements ActionListener {
                     int value = Integer.parseInt(text);
                     gg.addValue(value, x, y);
                 }
-                coloraCelle();
+                if(suggerimentiEnabled)
+                    coloraCelle();
                 System.out.println("modificata la cella " + x + "," + y);
                 System.out.println(gg.getCell(x, y).getState());
                 /*

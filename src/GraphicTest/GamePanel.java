@@ -14,6 +14,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private Menu menu; //Il menu è il subject da osservare
     private JButton nuovaPartita; //altro subject da osservare
     private JButton caricaPartita; //altro subject da osservare
+    private JButton suggerimenti; //altro subject da osservare
     private GridPanel gp; //figlio
     private BacktrackingPanel backtrackingPanel; //figlio
 
@@ -31,10 +32,16 @@ public class GamePanel extends JPanel implements ActionListener {
         caricaPartita.setLocation(300,250);
         caricaPartita.setSize(150,40);
         //caricaPartita.addActionListener(this);
+        suggerimenti=new JButton("Mostra vincoli");
+        suggerimenti.setLocation(600,100);
+        suggerimenti.setSize(150,40);
+        suggerimenti.addActionListener(this);
+        add(suggerimenti);
         add(caricaPartita);
         add(nuovaPartita);
         add(gp);
         add(backtrackingPanel);
+        suggerimenti.setVisible(false);
         backtrackingPanel.setVisible(false);
 
         setSize(800,570);
@@ -54,6 +61,7 @@ public class GamePanel extends JPanel implements ActionListener {
         if(e.getSource()==menu.getNuovaPartita() || e.getSource()==nuovaPartita) {
             nuovaPartita.setVisible(false);
             caricaPartita.setVisible(false);
+            suggerimenti.setVisible(true);
             menu.getSalvaPartita().setEnabled(true);
             //backtrackingPanel.setVisible(true);
             //demanda al gridpanel
@@ -85,6 +93,9 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         if(e.getSource()== menu.getImpostaDimensione()){
             gp.actionPerformed(new ActionEvent(this,0,"newDimension"));
+        }
+        if(e.getSource()==suggerimenti){
+            gp.actionPerformed(new ActionEvent(this,0,"suggerimenti"));
         }
     }
 }
