@@ -11,13 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GamePanel extends JPanel implements ActionListener {
+    private Menu m; //Il menu è il subject
     private GridGame gg;
     private GridPanel gp;
-    private Menu m;
     private JButton nuovaPartita;
 
 
-    public GamePanel(GridGame gg, Menu m,Mediator mediator){
+    public GamePanel(GridGame gg, Menu m, Mediator mediator){
         this.m=m;
         setSize(800,570);
         setLayout(null);
@@ -29,35 +29,27 @@ public class GamePanel extends JPanel implements ActionListener {
         this.gg=gg;
         this.gp=new GridPanel(gg,mediator);
         add(gp);
-        //todo capisci perché al primo colpo non rileva i constraint!
-        /*Generator g = gg.getGenerator();
-        g.generate();
 
-         */
         /*
+        //todo capisci perché al primo colpo non rileva i constraint!
         new NewGameCommand(gg).execute();
         gp.configura();
         */
 
         add(new BacktrackingPanel(gg,gp));
+
         //setSize(800,800);
         //setLocation(200,200);
     }
 
-    public GridGame getGridGame(){
-        return gg;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==m.getNuovaPartita()) {
-            nuovaPartita.setVisible(false);
-            gp.configura();
-        }
-        if(e.getSource()==nuovaPartita){
+        if(e.getSource()==m.getNuovaPartita() || e.getSource()==nuovaPartita) {
             new NewGameCommand(gg).execute();
             nuovaPartita.setVisible(false);
             gp.configura();
+            repaint();
+            revalidate();
         }
     }
 }

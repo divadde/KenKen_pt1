@@ -4,17 +4,16 @@ import Generating.ConcreteGenerator;
 import Generating.Generator;
 import GraphicTest.Mediator;
 
-import javax.print.attribute.standard.Media;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Table implements GridGame {
+public final class KenKen implements GridGame {
     private static int dimension;
     private static Cell[][] table;
     private Mediator mediator;
 
-    public Table() {}
+    public KenKen() {}
 
     /* NON USATO
     public Table(int dimension) {
@@ -31,6 +30,7 @@ public class Table implements GridGame {
     @Override
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
+        mediator.setGridGame(this);
     }
 
     @Override
@@ -300,35 +300,5 @@ public class Table implements GridGame {
             return "[" + value + "]";
         }
 
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println("KenKen!\n");
-        GridGame gg = new Table();
-        Generator c = new ConcreteGenerator(gg, 4);
-        c.generate();
-        Scanner sc = new Scanner(System.in);
-        while (true) {
-            System.out.println(gg);
-            System.out.println();
-            System.out.println(gg.constrString());
-            int value = dimension+1;
-            while(value>dimension) {
-                System.out.print("Valore: ");
-                value = sc.nextInt();
-            }
-            int x = dimension+1;
-            while(x>=dimension) {
-                System.out.print("Nella x: ");
-                x = sc.nextInt();
-            }
-            int y = dimension+1;
-            while(y>=dimension) {
-                System.out.print("Nella y: ");
-                y = sc.nextInt();
-            }
-            System.out.println(gg.addValue(value,x,y)+"\n");
-        }
     }
 }

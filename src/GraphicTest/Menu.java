@@ -3,6 +3,7 @@ package GraphicTest;
 import Command.Command;
 import Command.NewGameCommand;
 import Generating.Generator;
+import Model.GridGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,29 +11,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JMenuBar implements ActionListener {
-    private GamePanel gp;
-    private JMenu gioca, impostazioni, help;
-    private JMenuItem nuovaPartita, caricaPartita;
-    private Command ngc;
-    private Mediator mediator;
+    private GamePanel gp; //il gamepanel è l'observer
+    private JMenu gioca, impostazioni, help, impostazioniGeneratore;
+    private JMenuItem nuovaPartita, caricaPartita, impostaDimensione;
 
     public Menu(){
         gioca = new JMenu("Gioca");
         impostazioni = new JMenu("Impostazioni");
         help = new JMenu("Help");
+        impostazioniGeneratore= new JMenu("Impostazioni generatore");
         add(gioca);
         add(impostazioni);
         add(help);
         nuovaPartita=new JMenuItem("Nuova partita");
         caricaPartita=new JMenuItem("Carica partita");
+        impostaDimensione=new JMenuItem("Imposta dimensione");
         gioca.add(nuovaPartita);
         gioca.add(caricaPartita);
-        nuovaPartita.addActionListener(this);
+        impostazioni.add(impostaDimensione);
+        impostazioni.add(impostazioniGeneratore);
     }
 
+    //attach observer
     public void setGamePanel(GamePanel gp){
         this.gp=gp;
-        ngc = new NewGameCommand(gp.getGridGame());
+        nuovaPartita.addActionListener(gp);
     }
 
     public JMenuItem getNuovaPartita(){
@@ -41,11 +44,6 @@ public class Menu extends JMenuBar implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource()==nuovaPartita){
-            ngc.execute();
-            gp.actionPerformed(new ActionEvent(nuovaPartita,0,"nuovaPartita"));
-            gp.repaint();
-            gp.revalidate();
-        }
     }
+
 }

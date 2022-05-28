@@ -3,7 +3,6 @@ package GraphicTest;
 import Generating.ConcreteGenerator;
 import Generating.Generator;
 import Model.GridGame;
-import Model.Table;
 
 import javax.swing.*;
 
@@ -13,7 +12,6 @@ public class WindowGame extends JFrame {
         setTitle(title);
         Mediator mediator = new Mediator();
         gg.setMediator(mediator);
-        mediator.setGridGame(gg);
         Menu m = new Menu();
         GamePanel gp = new GamePanel(gg,m,mediator);
         m.setGamePanel(gp);
