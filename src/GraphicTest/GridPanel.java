@@ -1,5 +1,6 @@
 package GraphicTest;
 
+import Command.MaxSolutionsCommand;
 import Command.NewGameCommand;
 import Model.CellIF;
 import Model.Constraint;
@@ -69,6 +70,7 @@ public class GridPanel extends JPanel implements ActionListener {
             configura();
             repaint();
             revalidate();
+            new MaxSolutionsCommand(gg).execute();
         }
         if(e.getActionCommand().equals("next")){
             aggiornaValori();
@@ -77,19 +79,26 @@ public class GridPanel extends JPanel implements ActionListener {
             aggiornaValori();
         }
         if(e.getActionCommand().equals("newDimension")){
-            int dimensione;
+            boolean scelto=true;
+            int dimensione=6;
             while(true) {
                 String mess = JOptionPane.showInputDialog("Imposta la dimensione del KenKen");
+                if(mess==null) {
+                    scelto=false;
+                    break;
+                }
                 try {
                     dimensione=Integer.parseInt(mess);
                     break;
-                } catch(RuntimeException ex){
+                } catch(RuntimeException ex) {
                     JOptionPane.showMessageDialog(null,"Inserire un intero");
                 }
             }
-            gg.setDimension(dimensione);
-            setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
-            gp.actionPerformed(new ActionEvent(gp.getNuovaPartita(),0,"nuovaPartita"));
+            if(scelto) {
+                gg.setDimension(dimensione);
+                setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
+                gp.actionPerformed(new ActionEvent(gp.getNuovaPartita(), 0, "nuovaPartita"));
+            }
         }
     }
 

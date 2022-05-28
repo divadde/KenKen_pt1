@@ -50,6 +50,7 @@ public abstract class Backtracking<P, S> { //iterable deve essere parametrico?
     public abstract CellIF[][] prevSol();
 
     public abstract int numSol();
+    public abstract void setMaxSol(int maxSol);
 
 
 }//Backtracking

@@ -11,8 +11,10 @@ public final class Solver extends Backtracking<CellIF,Integer>{
     private GridGame gg;
     private List<CellIF[][]> tabelleComplete;
     private ListIterator<CellIF[][]> lit;
+    private int maxSol;
 
     private Solver(GridGame gg){
+        maxSol=10; //assegnate di default
         this.gg=gg;
         tabelleComplete=new LinkedList<>();
         lit=tabelleComplete.listIterator();
@@ -105,8 +107,20 @@ public final class Solver extends Backtracking<CellIF,Integer>{
         return null;
     }
 
+    @Override
+    protected boolean ultimaSoluzione(CellIF c){
+        return !(numSol()<maxSol);
+    }
+
+    @Override
     public int numSol(){
         return tabelleComplete.size();
+    }
+
+    @Override
+    public void setMaxSol(int maxSol){
+        this.maxSol=maxSol;
+        System.out.println("Il numero massimo di soluzioni è stato impostato a: "+maxSol);
     }
 
 
