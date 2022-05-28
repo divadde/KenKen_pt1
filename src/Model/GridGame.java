@@ -5,9 +5,10 @@ import Backtracking.Solver;
 import Generating.ConcreteGenerator;
 import Generating.Generator;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface GridGame {
+public interface GridGame extends Serializable {
 
     boolean addValue(int val, int x, int y);
     boolean isLegal(int val, int x, int y);
@@ -35,5 +36,8 @@ public interface GridGame {
     default Backtracking getBacktracking() {
         return Solver.getInstance(this);
     }
+
+    CellIF[][] getReferenceTable();
+    void changeReferenceTable(CellIF[][] table);
     
 }

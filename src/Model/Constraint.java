@@ -1,8 +1,9 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Constraint implements Cloneable {
+public abstract class Constraint implements Cloneable, Serializable {
     protected int id;
     protected static int nextId=0;
 

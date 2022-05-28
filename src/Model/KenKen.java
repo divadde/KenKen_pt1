@@ -1,11 +1,14 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class KenKen implements GridGame {
+public final class KenKen implements GridGame, Serializable {
     private static int dimension;
     private static Cell[][] table;
+
+    private static final long serialVersionUID = 9177631848186263965L;
 
     public KenKen() {}
 
@@ -31,6 +34,15 @@ public final class KenKen implements GridGame {
                 ret[i][j] = new Cell(table[i][j]);
         }
         return ret;
+    }
+
+    @Override
+    public CellIF[][] getReferenceTable(){
+        return table;
+    }
+    @Override
+    public void changeReferenceTable(CellIF[][] table){
+        this.table=(Cell[][]) table;
     }
 
     @Override
@@ -198,7 +210,7 @@ public final class KenKen implements GridGame {
         return list;
     }
 
-    private class Cell implements CellIF {
+    private class Cell implements CellIF, Serializable {
         private int value;
         private int x;
         private int y;
@@ -206,6 +218,8 @@ public final class KenKen implements GridGame {
         private boolean stateKenKen;
         private boolean stateCage;
         private List<Cell> inContrast;
+
+        private static final long serialVersionUID = 4177631348182261145L;
 
         public Cell(int x, int y) {
             inContrast=new LinkedList<>();

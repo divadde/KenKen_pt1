@@ -1,7 +1,9 @@
 package GraphicTest;
 
+import Command.LoadGameCommand;
 import Command.MaxSolutionsCommand;
 import Command.NewGameCommand;
+import Command.SaveGameCommand;
 import Model.CellIF;
 import Model.Constraint;
 import Model.GridGame;
@@ -135,6 +137,16 @@ public class GridPanel extends JPanel implements ActionListener {
                 coloraCelle();
             else
                 eliminaColori();
+        }
+        if(e.getActionCommand()=="salvaPartita"){
+            new SaveGameCommand(gg).execute();
+        }
+        if(e.getActionCommand()=="caricaPartita"){
+            new LoadGameCommand(gg).execute();
+            System.out.println(gg.toString());
+            System.out.println(gg.constrString());
+            configura();
+            aggiornaValori();
         }
     }
 

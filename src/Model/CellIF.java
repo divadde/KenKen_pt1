@@ -1,6 +1,8 @@
 package Model;
 
-public interface CellIF {
+import java.io.Serializable;
+
+public interface CellIF extends Serializable {
     boolean setValue(int value);
     void setCageState(boolean state);
     boolean getState();

@@ -1,19 +1,23 @@
 package Model;
 
+import java.awt.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Cage extends Constraint{
+public class Cage extends Constraint implements Serializable {
 
     private Operation op;
     private List<CellIF> cells;
     private int result;
 
+    private static final long serialVersionUID = 7477631348882269149L;
+
     private interface Operable {
         int doOp(List<Integer> l);
     }
 
-    private enum Operation implements Operable {
+    private enum Operation implements Operable, Serializable {
         //Assunzione: parto dal presupposto che ricevo la lista con elementi ordinati dal più grande al più piccolo
         //todo modifica il fatto che da parte dell'utente si possa scegliere la precedenza
         ADDIZIONE{

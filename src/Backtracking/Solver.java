@@ -79,6 +79,7 @@ public final class Solver extends Backtracking<CellIF,Integer>{
     public void risolvi() {
         tabelleComplete=new LinkedList<>();
         sol=0;
+        gg.clean();
         //lit=tabelleComplete.listIterator();
         tentativo(puntiDiScelta(),puntiDiScelta().get(0));
         System.out.println("Soluzioni trovate: "+sol);
