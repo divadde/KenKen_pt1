@@ -71,6 +71,8 @@ public class GamePanel extends JPanel implements ActionListener {
         if(e.getSource()==menu.getCaricaPartita() || e.getSource()==caricaPartita) {
             //demanda al gridpanel
             gp.actionPerformed(new ActionEvent(this,0,"caricaPartita"));
+            backtrackingPanel.actionPerformed(new ActionEvent(this.nuovaPartita,0,"caricaPartita"));
+            suggerimenti.setVisible(true);
             nuovaPartita.setVisible(false);
             caricaPartita.setVisible(false);
             backtrackingPanel.setVisible(true);

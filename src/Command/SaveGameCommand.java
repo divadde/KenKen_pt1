@@ -1,6 +1,7 @@
 package Command;
 
 import Model.GridGame;
+import Model.KenKen;
 
 import javax.swing.*;
 import java.io.FileOutputStream;
@@ -8,10 +9,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 public class SaveGameCommand implements Command{
-    GridGame gg;
+    GridGame g;
 
-    public SaveGameCommand(GridGame gg){
-        this.gg=gg;
+    public SaveGameCommand(GridGame g){
+        this.g=g;
     }
 
     @Override
@@ -30,10 +31,12 @@ public class SaveGameCommand implements Command{
         }
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(absolutePath));
-            oos.writeObject(gg);
+            oos.writeObject(g);
+            oos.flush();
             oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

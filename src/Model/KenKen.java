@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public final class KenKen implements GridGame, Serializable {
-    private static int dimension;
-    private static Cell[][] table;
+    private int dimension;
+    private Cell[][] table;
 
     private static final long serialVersionUID = 9177631848186263965L;
 

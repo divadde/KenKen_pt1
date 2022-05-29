@@ -53,7 +53,9 @@ public class GridPanel extends JPanel implements ActionListener {
     public void aggiornaValori(){
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++){
-                grigliaGrafica[i][j].setText(Integer.toString(gg.getTable()[i][j].getValue()));
+                int value = gg.getTable()[i][j].getValue();
+                if(value!=0)
+                    grigliaGrafica[i][j].setText(Integer.toString(value));
             }
         }
         if(suggerimentiEnabled)
@@ -143,8 +145,7 @@ public class GridPanel extends JPanel implements ActionListener {
         }
         if(e.getActionCommand()=="caricaPartita"){
             new LoadGameCommand(gg).execute();
-            System.out.println(gg.toString());
-            System.out.println(gg.constrString());
+            setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
             configura();
             aggiornaValori();
         }

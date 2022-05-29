@@ -41,7 +41,7 @@ public class BacktrackingPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==gp.getNuovaPartita()){
+        if(e.getSource()==gp.getNuovaPartita() || e.getActionCommand()=="caricaPartita"){
             setVisible(true);
             next.setEnabled(false);
             previous.setEnabled(false);
