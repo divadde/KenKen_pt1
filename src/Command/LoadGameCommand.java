@@ -1,7 +1,6 @@
 package Command;
 
 import Model.GridGame;
-import Model.KenKen;
 
 import javax.swing.*;
 import java.io.EOFException;
@@ -46,7 +45,6 @@ public class LoadGameCommand implements Command{
                     break;
                 }
             }
-            //gg.changeReferenceTable(read.getReferenceTable());
             oos.close();
         } catch (IOException e1) {
             e1.printStackTrace();

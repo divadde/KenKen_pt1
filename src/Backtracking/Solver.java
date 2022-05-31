@@ -3,21 +3,27 @@ package Backtracking;
 import Model.CellIF;
 import Model.GridGame;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
-public final class Solver extends Backtracking<CellIF,Integer>{
+//SINGLETON
+public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
     private static Solver INSTANCE=null;
     private int sol;
     private GridGame gg;
-    private List<CellIF[][]> tabelleComplete;
+    private List<CellIF[][]> completeTables;
     private ListIterator<CellIF[][]> lit;
     private int maxSol;
 
     private Solver(GridGame gg){
         maxSol=10; //assegnate di default
         this.gg=gg;
-        tabelleComplete=new LinkedList<>();
-        lit=tabelleComplete.listIterator();
+        completeTables=new LinkedList<>();
+        lit=completeTables.listIterator();
+        choosingPoints=computeChoosingPoints();
+        System.out.println(choosingPoints.size());
     }
 
     public static synchronized Solver getInstance(GridGame gg){
@@ -28,35 +34,35 @@ public final class Solver extends Backtracking<CellIF,Integer>{
     }
 
     @Override
-    protected boolean esisteSoluzione(CellIF cell) {
+    protected boolean foundSolution(CellIF cell) {
         return gg.isCompleted();
     }
 
     @Override
-    protected boolean assegnabile(CellIF cell, Integer integer) {
+    protected boolean admissible(CellIF cell, Integer integer) {
         return gg.isLegal(integer, cell.getX(), cell.getY());
     }
 
     @Override
-    protected void assegna(CellIF cell, Integer integer) {
+    protected void submit(CellIF cell, Integer integer) {
         gg.addValue(integer, cell.getX(), cell.getY());
         System.out.println("Aggiunto a "+cell.getX()+","+cell.getY()+" il valore "+integer);
     }
 
     @Override
-    protected void deassegna(CellIF cellIF, Integer integer) {
+    protected void remove(CellIF cellIF, Integer integer) {
         gg.removeValue(cellIF.getX(), cellIF.getY());
     }
 
     @Override
-    protected void scriviSoluzione(CellIF cell) {
-        tabelleComplete.add(gg.getTable());
+    protected void submitSolution(CellIF cell) {
+        completeTables.add(gg.getTable());
         sol++;
         System.out.println("Soluzione "+sol+" trovata!");
     }
 
     @Override
-    protected List<CellIF> puntiDiScelta() {
+    protected List<CellIF> computeChoosingPoints() {
         LinkedList<CellIF> celle = new LinkedList<>();
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++){
@@ -67,34 +73,38 @@ public final class Solver extends Backtracking<CellIF,Integer>{
     }
 
     @Override
-    protected Collection<Integer> scelte(CellIF cell) {
-        LinkedList<Integer> possScelte = new LinkedList<>();
+    protected Collection<Integer> admissibleChoices(CellIF cell) {
+        LinkedList<Integer> ret = new LinkedList<>();
         for(int i=0; i<gg.getDimension(); i++){
-            possScelte.addLast(i+1);
+            System.out.println("Cella incriminata: "+cell.getX()+","+cell.getY());
+            if(admissible(cell,i+1)) {
+                ret.addLast(i + 1);
+            }
         }
-        return possScelte;
+        System.out.println("Scelte ammissibili per"+cell.getX()+","+cell.getY()+" :");
+        System.out.println(ret);
+        return ret;
     }
 
     @Override
-    public void risolvi() {
-        tabelleComplete=new LinkedList<>();
+    public void solve() {
+        completeTables=new LinkedList<>();
         sol=0;
         gg.clean();
-        //lit=tabelleComplete.listIterator();
-        tentativo(puntiDiScelta(),puntiDiScelta().get(0));
+        choosingPoints=computeChoosingPoints();
+        execute(choosingPoints.get(0));
         System.out.println("Soluzioni trovate: "+sol);
-        for(CellIF[][] soluzione: tabelleComplete){
+        for(CellIF[][] soluzione: completeTables){
             gg.setTable(soluzione);
             System.out.println(gg.toString());
         }
-        System.out.println(tabelleComplete.size());
-        lit=tabelleComplete.listIterator();
+        System.out.println(completeTables.size());
+        lit=completeTables.listIterator();
     }
 
 
     @Override
     public CellIF[][] nextSol() {
-        //lit=tabelleComplete.listIterator();
         if(lit.hasNext())
             return lit.next();
         return null;
@@ -102,20 +112,19 @@ public final class Solver extends Backtracking<CellIF,Integer>{
 
     @Override
     public CellIF[][] prevSol() {
-        //lit=tabelleComplete.listIterator();
         if(lit.hasPrevious())
             return lit.previous();
         return null;
     }
 
     @Override
-    protected boolean ultimaSoluzione(CellIF c){
+    protected boolean stop(CellIF c){
         return !(numSol()<maxSol);
     }
 
     @Override
     public int numSol(){
-        return tabelleComplete.size();
+        return completeTables.size();
     }
 
     @Override

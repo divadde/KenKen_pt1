@@ -2,9 +2,12 @@ package Generating;
 
 import Model.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ConcreteGenerator extends Generator {
 
-    private Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints todo
+    private Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints prototipi todo
     //todo aggiungi parametri
     private int maxGrandezza;
     private int minGrandezza;
@@ -64,11 +67,17 @@ public class ConcreteGenerator extends Generator {
                     Direction d = Direction.DESTRA.chooseRandomly();
                     nextCell = d.doOp(lastCell);
                     if(nextCell!=null) gg.setConstraint(c,nextCell.getX(),nextCell.getY());
-                    else{ //fornisco altri 3 tentativi di spostarsi
-                        int j=0;
-                        while(nextCell!=null || j>=3){
-                            d = Direction.DESTRA.chooseRandomly();
+                    else{
+                        List<Direction> l = addDirections();
+                        while(nextCell==null){
+                            l.remove(d);
+                            if(l.isEmpty()) break;
+                            d = l.get(chooseRandomic(l.size()));
                             nextCell = d.doOp(lastCell);
+                            if(nextCell!=null) {
+                                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                                break;
+                            }
                         }
                     }
                 }
@@ -79,9 +88,35 @@ public class ConcreteGenerator extends Generator {
     }
 
     private int chooseCageDimension(){
-        if (dimension<=4)
-            return (int) (Math.random()*dimension);
-        return (int) (Math.random()*4);
+        if (dimension<=4) {
+            return (int) (Math.random() * dimension);
+        }
+        return 2+(int) (Math.random() * 2);
+    }
+
+    /*
+    private int chooseCageDimension(int remainings){
+        switch(remainings) {
+            case 0: return 1;
+            case 1: return 1;
+            case 2: return 2;
+            case 3: return 3; //todo intervalla tra 1 e 3
+            case 4: return 1+(int) (Math.random() * 2);
+            default: if (dimension<=4) {
+                        return (int) (Math.random() * dimension);
+                     }
+                return (int) (Math.random() * 4);
+        } //todo verifica correttezza
+    }
+     */
+
+    private int chooseRandomic(int n){
+        return (int) Math.random()*n;
+    }
+    private List<Direction> addDirections() {
+        List<Direction> l = new LinkedList<>();
+        l.add(Direction.DESTRA); l.add(Direction.GIU); l.add(Direction.SINISTRA);
+        return l;
     }
 
     private interface Directionable { //todo è necessaria?

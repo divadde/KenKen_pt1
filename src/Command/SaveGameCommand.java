@@ -1,7 +1,6 @@
 package Command;
 
 import Model.GridGame;
-import Model.KenKen;
 
 import javax.swing.*;
 import java.io.FileOutputStream;

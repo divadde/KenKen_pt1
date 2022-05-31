@@ -1,56 +1,55 @@
 package Backtracking;
 
-import Model.CellIF;
-import Model.GridGame;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-import java.util.*;
+//TEMPLATE METHOD
+public abstract class Backtracking<P,C,S> {
+    protected List<P> choosingPoints;
 
-public abstract class Backtracking<P, S> { //iterable deve essere parametrico?
+    public abstract void solve();
 
-    protected abstract boolean assegnabile( P p, S s );
-    protected abstract void assegna( P ps, S s );
-    protected abstract void deassegna( P ps, S s );
-    protected abstract void scriviSoluzione( P p );
-
-    private P prossimoPuntoDiScelta(List<P> ps, P p ) {
-        if( esisteSoluzione(p) ) throw new NoSuchElementException();
-        int i=ps.indexOf(p);
-        return ps.get(i+1);
-    }//prossimoPuntoDiScelta
-
-    protected boolean esisteSoluzione(P p ) {
-        return false;
-    }//esisteSoluzione
-
-    protected boolean ultimaSoluzione( P p ) {
-        return false; //cerca tutte le possibili soluzioni
-    }//ultimaSoluzione
-
-    //factory
-    protected abstract List<P> puntiDiScelta();
-    protected abstract Collection<S> scelte(P p );
-
-    protected void tentativo( List<P> ps, P p ) {
-        Collection<S> sa=scelte(p); //scelte ammissibili per p
-        for( S s: sa) {
-            if( ultimaSoluzione(p) ) break;
-            if( assegnabile(p,s) ) {
-                assegna(p,s);
-                if( esisteSoluzione(p) ) scriviSoluzione(p);
-                else tentativo( ps, prossimoPuntoDiScelta(ps,p) );
-                deassegna(p,s);
-            }
+    protected void execute(P point) {
+        Collection<C> choices=admissibleChoices(point);
+        for(C choice: choices) {
+            if(stop(point))
+                break;
+            submit(point,choice);
+            if(foundSolution(point)) submitSolution(point);
+            else execute(nextPoint(point));
+            remove(point,choice);
         }
-    }//tentativo
+    }
 
-    public abstract void risolvi();
+    protected abstract Collection<C> admissibleChoices(P point);
+
+    protected boolean stop(P point) {return false;}
+
+    protected abstract boolean admissible(P point,C choice);
+
+    protected abstract void submit(P point,C choice);
+
+    protected abstract void remove(P point,C choice);
+
+    protected abstract void submitSolution(P point);
+
+    private P nextPoint(P point) {
+        if(foundSolution(point)) throw new NoSuchElementException();
+        int i=choosingPoints.indexOf(point);
+        return choosingPoints.get(i+1);
+    }
+
+    protected boolean foundSolution(P point) {
+        return false;
+    }
+
+    protected abstract List<P> computeChoosingPoints();
 
 
-    public abstract CellIF[][] nextSol();
-    public abstract CellIF[][] prevSol();
+    public abstract S nextSol();
+    public abstract S prevSol();
 
     public abstract int numSol();
     public abstract void setMaxSol(int maxSol);
-
-
-}//Backtracking
+}

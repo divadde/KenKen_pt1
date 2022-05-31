@@ -1,7 +1,6 @@
 package Command;
 
 import Backtracking.Backtracking;
-import Backtracking.Solver;
 import Model.GridGame;
 
 public class SolveCommand implements Command {
@@ -15,7 +14,7 @@ public class SolveCommand implements Command {
 
     @Override
     public void execute() {
-        s.risolvi();
+        s.solve();
         System.out.println("SolveCommand: soluzioni trovate");
     }
 

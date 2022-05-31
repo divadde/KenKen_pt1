@@ -4,8 +4,6 @@ import Backtracking.Backtracking;
 import Model.GridGame;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class MaxSolutionsCommand implements Command{
     GridGame gg;

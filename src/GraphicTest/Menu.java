@@ -14,7 +14,7 @@ public class Menu extends JMenuBar implements ActionListener {
     private GamePanel gp; //il gamepanel è l'observer
     private JMenu gioca, impostazioni, help, impostazioniGeneratore;
     private JMenuItem nuovaPartita, salvaPartita, caricaPartita, impostaDimensione;
-    private JOptionPane selezioneGrandezza;
+
 
     public Menu(){
         gioca = new JMenu("Gioca");

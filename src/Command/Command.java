@@ -1,7 +1,6 @@
 package Command;
 
-import Model.GridGame;
-
+//COMMAND
 public interface Command {
 
     void execute();

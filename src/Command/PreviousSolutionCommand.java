@@ -4,9 +4,6 @@ import Backtracking.Backtracking;
 import Model.CellIF;
 import Model.GridGame;
 
-import java.util.Iterator;
-import java.util.ListIterator;
-
 public class PreviousSolutionCommand implements Command {
     GridGame gg;
     Backtracking s;
@@ -18,10 +15,9 @@ public class PreviousSolutionCommand implements Command {
 
     @Override
     public void execute() {
-        CellIF[][] currSol = s.prevSol();
+        CellIF[][] currSol = (CellIF[][]) s.prevSol();
         if (currSol != null) {
             gg.setTable(currSol);
-            //gg.getMediator().notifyGridPanel(gg.getTable());
             System.out.println("PREV SOLUTION");
         }
     }
