@@ -1,10 +1,8 @@
-package GraphicTest;
+package Graphic;
 
-import Command.LoadGameCommand;
-import Command.MaxSolutionsCommand;
-import Command.NewGameCommand;
-import Command.SaveGameCommand;
-import Model.CellIF;
+import Graphic.Mediator.Mediator;
+import Graphic.Mediator.Request;
+import Graphic.Mediator.Subject;
 import Model.Constraint;
 import Model.GridGame;
 
@@ -12,18 +10,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
 
-public class GridPanel extends JPanel implements ActionListener {
-    private GamePanel gp; //riferimento al padre
+public class GridPanel extends JPanel implements ActionListener, Subject {
+    private Mediator mediator;
     private GridGame gg; //riferimento alla parte logica
     private List<Constraint> constr;
     private GameCell[][] grigliaGrafica;
     private boolean suggerimentiEnabled;
 
-    public GridPanel(GamePanel gp, GridGame gg) {
-        this.gp=gp;
+    public GridPanel(GamePanel gp, GridGame gg, Mediator mediator) {
+        setMediator(mediator);
+
         this.gg=gg;
         setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
         setSize(400,400);
@@ -98,57 +96,51 @@ public class GridPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==gp.getNuovaPartita()){
-            new NewGameCommand(gg).execute();
+    }
+
+    @Override
+    public void handleRequest(Request request) {
+        if(request.getTipo()==Request.Tipo.READY){
+            request.getCommand().execute(gg);
+            setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
             configura();
             repaint();
             revalidate();
-            new MaxSolutionsCommand(gg).execute();
         }
-        if(e.getActionCommand().equals("next")){
+        else if(request.getTipo()==Request.Tipo.SAVEGAME){
+            request.getCommand().execute(gg);
+        }
+        else if(request.getTipo()==Request.Tipo.LOADGAME){
+            request.getCommand().execute(gg);
+            setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
+            configura();
             aggiornaValori();
         }
-        if(e.getActionCommand().equals("previous")){
+        else if(request.getTipo()==Request.Tipo.SHOWSOLUTION){
+            request.getCommand().execute(gg);
             aggiornaValori();
         }
-        if(e.getActionCommand().equals("newDimension")){
-            boolean scelto=true;
-            int dimensione=6;
-            while(true) {
-                String mess = JOptionPane.showInputDialog("Imposta la dimensione del KenKen");
-                if(mess==null) {
-                    scelto=false;
-                    break;
-                }
-                try {
-                    dimensione=Integer.parseInt(mess);
-                    break;
-                } catch(RuntimeException ex) {
-                    JOptionPane.showMessageDialog(null,"Inserire un intero");
-                }
-            }
-            if(scelto) {
-                gg.setDimension(dimensione);
-                setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
-                gp.actionPerformed(new ActionEvent(gp.getNuovaPartita(), 0, "nuovaPartita"));
-            }
+        else if(request.getTipo()==Request.Tipo.NEXTSOLUTION){
+            request.getCommand().execute(gg);
+            aggiornaValori();
         }
-        if(e.getActionCommand()=="suggerimenti"){
+        else if(request.getTipo()==Request.Tipo.PREVIOUSSOLUTION){
+            request.getCommand().execute(gg);
+            aggiornaValori();
+        }
+        else if(request.getTipo()==Request.Tipo.SHOWSUGGESTINGS){
             suggerimentiEnabled = !suggerimentiEnabled;
             if(suggerimentiEnabled)
                 coloraCelle();
             else
                 eliminaColori();
         }
-        if(e.getActionCommand()=="salvaPartita"){
-            new SaveGameCommand(gg).execute();
-        }
-        if(e.getActionCommand()=="caricaPartita"){
-            new LoadGameCommand(gg).execute();
-            setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
-            configura();
-            aggiornaValori();
-        }
+    }
+
+    @Override
+    public void setMediator(Mediator mediator) {
+        this.mediator=mediator;
+        mediator.addSubject(this);
     }
 
 

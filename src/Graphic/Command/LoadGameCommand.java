@@ -1,4 +1,4 @@
-package Command;
+package Graphic.Command;
 
 import Model.GridGame;
 
@@ -8,15 +8,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-public class LoadGameCommand implements Command{
-    GridGame gg;
+public class LoadGameCommand implements Command {
 
-    public LoadGameCommand(GridGame gg){
-        this.gg=gg;
-    }
+
+    public LoadGameCommand(){}
 
     @Override
-    public void execute() {
+    public void execute(GridGame gg) {
         String nomeFile = null;
         String absolutePath = null;
         JFileChooser jfc = new JFileChooser();

@@ -94,10 +94,12 @@ public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
         choosingPoints=computeChoosingPoints();
         execute(choosingPoints.get(0));
         System.out.println("Soluzioni trovate: "+sol);
+        /*
         for(CellIF[][] soluzione: completeTables){
             gg.setTable(soluzione);
             System.out.println(gg.toString());
         }
+        */
         System.out.println(completeTables.size());
         lit=completeTables.listIterator();
     }

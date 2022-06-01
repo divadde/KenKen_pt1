@@ -1,22 +1,23 @@
-package GraphicTest;
+package Graphic;
 
-import Generating.ConcreteGenerator;
-import Generating.Generator;
+import Graphic.Mediator.Mediator;
 import Model.GridGame;
 
+import javax.print.attribute.standard.Media;
 import javax.swing.*;
 
 public class WindowGame extends JFrame {
 
     public WindowGame(String title, GridGame gg){
-        setTitle(title);
-        Menu m = new Menu();
-        GamePanel gp = new GamePanel(gg,m);
-        m.setGamePanel(gp);
+        Mediator mediator = new Mediator();
+
+        Menu m = new Menu(mediator);
+        GamePanel gp = new GamePanel(gg,mediator);
+
         add(gp);
         setJMenuBar(m);
 
-
+        setTitle(title);
         setResizable(false); //todo se puoi rendila variabile
         //pack();
         setSize(800,570);

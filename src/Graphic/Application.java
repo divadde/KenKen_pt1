@@ -1,8 +1,7 @@
-package GraphicTest;
+package Graphic;
 
 import Model.GridGame;
 import Model.KenKen;
-import javax.swing.*;
 
 public final class Application {
     GridGame game;

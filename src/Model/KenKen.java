@@ -58,6 +58,7 @@ public final class KenKen implements GridGame, Serializable {
     @Override //todo, forse ci sarà da aggiustare qualcosa per la parte grafica
     public boolean addValue(int val, int x, int y) {
         table[x][y].setValue(val);
+        //System.out.println(this);
         return table[x][y].getState();
     }
 

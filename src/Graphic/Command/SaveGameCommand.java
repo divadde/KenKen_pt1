@@ -1,4 +1,4 @@
-package Command;
+package Graphic.Command;
 
 import Model.GridGame;
 
@@ -7,15 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class SaveGameCommand implements Command{
-    GridGame g;
+public class SaveGameCommand implements Command {
 
-    public SaveGameCommand(GridGame g){
-        this.g=g;
-    }
+    public SaveGameCommand(){}
 
     @Override
-    public void execute() {
+    public void execute(GridGame gg) {
         String nomeFile = null;
         String absolutePath = null;
         JFileChooser jfc = new JFileChooser();
@@ -30,7 +27,7 @@ public class SaveGameCommand implements Command{
         }
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(absolutePath));
-            oos.writeObject(g);
+            oos.writeObject(gg);
             oos.flush();
             oos.close();
         } catch (IOException e) {

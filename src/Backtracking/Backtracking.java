@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
 //TEMPLATE METHOD
 public abstract class Backtracking<P,C,S> {
     protected List<P> choosingPoints;

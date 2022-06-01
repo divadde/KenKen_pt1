@@ -1,20 +1,17 @@
-package Command;
+package Graphic.Command;
 
 import Backtracking.Backtracking;
 import Model.CellIF;
 import Model.GridGame;
 
-public class NextSolutionCommand implements Command{
-    GridGame gg;
-    Backtracking s;
+public class NextSolutionCommand implements Command {
 
-    public NextSolutionCommand(GridGame gg){
-        this.gg=gg;
-        s=gg.getBacktracking();
+    public NextSolutionCommand(){
     }
 
     @Override
-    public void execute() {
+    public void execute(GridGame gg) {
+        Backtracking s = gg.getBacktracking();
         CellIF[][] currSol = (CellIF[][]) s.nextSol();
         if(currSol!=null) {
             gg.setTable(currSol);

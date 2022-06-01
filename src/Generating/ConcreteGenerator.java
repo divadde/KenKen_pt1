@@ -5,7 +5,7 @@ import Model.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ConcreteGenerator extends Generator {
+public final class ConcreteGenerator extends Generator {
 
     private Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints prototipi todo
     //todo aggiungi parametri
@@ -45,8 +45,50 @@ public class ConcreteGenerator extends Generator {
             int k = (int) (Math.random() * dimension);
             if (z != k) gg.switchColumn(z, k);
         }
+        System.out.println(gg);
     }
 
+    /*
+    @Override
+    //V1 - problemi? no...
+    public void addConstraints() {
+        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
+        //constraint = new Cage();
+        while(true){
+            CellIF nextCell = nextPoint();
+            if(nextCell==null) break; //abbiamo finito
+            else {
+                Constraint c = constraint.clone();
+                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                //scegli numero randomico di passi
+                int n = chooseCageDimension();
+                for(int i=0; i<n; i++){ //todo se non si può raggiungere la dimensione prestabilita?
+                    CellIF lastCell=null;
+                    if(nextCell!=null) lastCell=nextCell;
+                    else break;
+                    //scegli direzioni randomiche
+                    Direction d = Direction.DESTRA.chooseRandomly();
+                    nextCell = d.doOp(lastCell);
+                    if(nextCell!=null) gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                    else{ //fornisco altri 3 tentativi di spostarsi
+                        int j=0;
+                        while(nextCell!=null || j>=3){
+                            d = Direction.DESTRA.chooseRandomly();
+                            nextCell = d.doOp(lastCell);
+                        }
+                    }
+                }
+                //setta i valori del constraint
+                c.setValues();
+            }
+        }
+    }
+
+     */
+
+
+    /*
+    //V2 - problemi, forse no
     @Override
     public void addConstraints() {
         //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
@@ -86,29 +128,76 @@ public class ConcreteGenerator extends Generator {
             }
         }
     }
+     */
+
+
+
+    @Override
+    //V3 - problemi
+    public void addConstraints() {
+        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
+        //constraint = new Cage();
+        while(true){
+            CellIF nextCell = nextPoint();
+            if(nextCell==null) break; //abbiamo finito
+            else {
+                Constraint c = constraint.clone();
+                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                //scegli numero randomico di passi
+                int n = chooseCageDimension();
+                for(int i=0; i<n; i++){ //todo se non si può raggiungere la dimensione prestabilita?
+                    CellIF lastCell=null;
+                    if(nextCell!=null) lastCell=nextCell;
+                    else break;
+                    //scegli direzioni randomiche
+                    Direction d = Direction.DESTRA.chooseRandomly();
+                    nextCell = d.doOp(lastCell);
+                    if(nextCell!=null) gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                    else if(i==0){ //in caso di cella singola
+                        List<Direction> l = addDirections();
+                        while(nextCell==null){
+                            l.remove(d);
+                            if(l.isEmpty()) { //cella singola ingabbiata, mi faccio inglobare da altri constraint
+                                Constraint vicino = searchNear(lastCell).getConstraint();
+                                gg.setConstraint(vicino,lastCell.getX(), lastCell.getY());
+                                vicino.setValues();
+                                break;
+                            }
+                            d = l.get(chooseRandomic(l.size()));
+                            nextCell = d.doOp(lastCell);
+                            if(nextCell!=null) {
+                                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+                            }
+                        }
+                    }
+                }
+                //setta i valori del constraint
+                c.setValues();
+            }
+        }
+        System.out.println(gg.constrString());
+    }
+
 
     private int chooseCageDimension(){
         if (dimension<=4) {
             return (int) (Math.random() * dimension);
         }
-        return 2+(int) (Math.random() * 2);
+        return 2+(int) (Math.random() * 1);
     }
 
-    /*
-    private int chooseCageDimension(int remainings){
-        switch(remainings) {
-            case 0: return 1;
-            case 1: return 1;
-            case 2: return 2;
-            case 3: return 3; //todo intervalla tra 1 e 3
-            case 4: return 1+(int) (Math.random() * 2);
-            default: if (dimension<=4) {
-                        return (int) (Math.random() * dimension);
-                     }
-                return (int) (Math.random() * 4);
-        } //todo verifica correttezza
+    private CellIF searchNear(CellIF c){
+        CellIF ret=null;
+        if(c.getY()>0) //CONTROLLO NORD
+            ret=gg.getCell(c.getX(),c.getY()-1);
+        if(c.getY()<dimension-1) //CONTROLLO SUD
+            ret=gg.getCell(c.getX(),c.getY()+1);
+        if(c.getX()<dimension-1) //CONTROLLO EST
+            ret=gg.getCell(c.getX()+1,c.getY());
+        if(c.getX()>0) //CONTROLLO OVEST
+            ret=gg.getCell(c.getX()-1,c.getY());
+        return ret;
     }
-     */
 
     private int chooseRandomic(int n){
         return (int) Math.random()*n;
