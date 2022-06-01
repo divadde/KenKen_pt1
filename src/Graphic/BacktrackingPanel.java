@@ -34,7 +34,7 @@ public class BacktrackingPanel extends JPanel implements ActionListener, Subject
         next.addActionListener(this);
         previous.addActionListener(this);
         setSize(200,200);
-        setLocation(600,400);
+        setLocation(600,350);
         setVisible(false);
 
     }

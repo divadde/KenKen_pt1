@@ -71,6 +71,7 @@ public class Menu extends JMenuBar implements ActionListener, Subject {
             menuSett.setVisible(true);
         }
         else if(request.getTipo()==Request.Tipo.READY){
+            menuSett.setVisible(false);
             salvaPartita.setEnabled(true);
         }
         else if(request.getTipo()==Request.Tipo.SAVEGAME){

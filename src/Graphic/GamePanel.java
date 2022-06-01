@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements ActionListener, Subject {
         caricaPartita.setLocation(300,250);
         caricaPartita.setSize(150,40);
         suggerimenti=new JButton("Mostra vincoli");
-        suggerimenti.setLocation(600,100);
+        suggerimenti.setLocation(600,50);
         suggerimenti.setSize(150,40);
         suggerimenti.addActionListener(this);
         add(suggerimenti);

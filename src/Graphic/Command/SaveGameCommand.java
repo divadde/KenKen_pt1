@@ -20,7 +20,7 @@ public class SaveGameCommand implements Command {
         if(val==JFileChooser.APPROVE_OPTION) {
             absolutePath = jfc.getSelectedFile().getAbsolutePath();
             nomeFile = jfc.getSelectedFile().getName();
-            JOptionPane.showMessageDialog(null,"Hai scelto il file "+nomeFile);
+            JOptionPane.showMessageDialog(null,"File salvato: "+nomeFile);
         }
         else if(val==JFileChooser.CANCEL_OPTION) {
             JOptionPane.showMessageDialog(null,"Annullata scelta del file");
