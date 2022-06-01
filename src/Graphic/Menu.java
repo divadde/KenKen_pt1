@@ -13,8 +13,9 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JMenuBar implements ActionListener, Subject {
     private JMenu gioca, help;
-    private JMenuItem nuovaPartita, salvaPartita, caricaPartita;
+    private JMenuItem nuovaPartita, salvaPartita, caricaPartita, istruzioni;
     private GameSettings menuSett;
+    private HelpFrame helpFrame;
     private Mediator mediator;
 
     public Menu(Mediator mediator){
@@ -23,21 +24,25 @@ public class Menu extends JMenuBar implements ActionListener, Subject {
         menuSett=new GameSettings(mediator);
         gioca = new JMenu("Gioca");
         help = new JMenu("Help");
+        helpFrame = new HelpFrame();
 
         add(gioca);
-
         add(help);
+
         nuovaPartita=new JMenuItem("Nuova partita");
         salvaPartita=new JMenuItem("Salva partita");
         caricaPartita=new JMenuItem("Carica partita");
+        istruzioni=new JMenuItem("Istruzioni");
 
         nuovaPartita.addActionListener(this);
         salvaPartita.addActionListener(this);
         caricaPartita.addActionListener(this);
+        istruzioni.addActionListener(this);
 
         gioca.add(nuovaPartita);
         gioca.add(salvaPartita);
         gioca.add(caricaPartita);
+        help.add(istruzioni);
 
         salvaPartita.setEnabled(false);
     }
@@ -60,7 +65,7 @@ public class Menu extends JMenuBar implements ActionListener, Subject {
         else if(e.getSource()==caricaPartita){
             mediator.notify(new Request(Request.Tipo.LOADGAME,new LoadGameCommand()));
         }
-        else if(e.getSource()==help){
+        else if(e.getSource()==istruzioni){
             mediator.notify(new Request(Request.Tipo.HELP,null));
         }
     }
@@ -74,17 +79,8 @@ public class Menu extends JMenuBar implements ActionListener, Subject {
             menuSett.setVisible(false);
             salvaPartita.setEnabled(true);
         }
-        else if(request.getTipo()==Request.Tipo.SAVEGAME){
-            //todo
-            //nothing to do
-        }
-        else if(request.getTipo()==Request.Tipo.LOADGAME){
-            //todo
-            //nothing to do
-        }
         else if(request.getTipo()==Request.Tipo.HELP){
-            //todo
-            //mostrare un pannellino con le informazioni
+            helpFrame.setVisible(true);
         }
     }
 
