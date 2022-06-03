@@ -1,6 +1,7 @@
 package Graphic.Command;
 
 import Model.GridGame;
+import Model.Informations;
 
 import javax.swing.*;
 import java.io.FileOutputStream;
@@ -27,7 +28,8 @@ public class SaveGameCommand implements Command {
         }
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(absolutePath));
-            oos.writeObject(gg);
+            Informations info = new Informations(gg.getDimension(),gg.getReferenceTable());
+            oos.writeObject(info);
             oos.flush();
             oos.close();
         } catch (IOException e) {

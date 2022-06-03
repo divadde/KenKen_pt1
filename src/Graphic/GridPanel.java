@@ -22,7 +22,7 @@ public class GridPanel extends JPanel implements Subject {
 
     public GridPanel(Mediator mediator) {
         setMediator(mediator);
-        gridGame=new KenKen();
+        gridGame=KenKen.getInstance();
         suggerimentiEnabled=false;
 
         setSize(400,400);

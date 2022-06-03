@@ -23,7 +23,7 @@ public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
         completeTables=new LinkedList<>();
         lit=completeTables.listIterator();
         choosingPoints=computeChoosingPoints();
-        System.out.println(choosingPoints.size());
+        //System.out.println(choosingPoints.size());
     }
 
     public static synchronized Solver getInstance(GridGame gg){
@@ -46,7 +46,7 @@ public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
     @Override
     protected void submit(CellIF cell, Integer integer) {
         gg.addValue(integer, cell.getX(), cell.getY());
-        System.out.println("Aggiunto a "+cell.getX()+","+cell.getY()+" il valore "+integer);
+        //System.out.println("Aggiunto a "+cell.getX()+","+cell.getY()+" il valore "+integer);
     }
 
     @Override
@@ -76,13 +76,13 @@ public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
     protected Collection<Integer> admissibleChoices(CellIF cell) {
         LinkedList<Integer> ret = new LinkedList<>();
         for(int i=0; i<gg.getDimension(); i++){
-            System.out.println("Cella incriminata: "+cell.getX()+","+cell.getY());
+            //System.out.println("Cella incriminata: "+cell.getX()+","+cell.getY());
             if(admissible(cell,i+1)) {
                 ret.addLast(i + 1);
             }
         }
-        System.out.println("Scelte ammissibili per"+cell.getX()+","+cell.getY()+" :");
-        System.out.println(ret);
+        //System.out.println("Scelte ammissibili per"+cell.getX()+","+cell.getY()+" :");
+        //System.out.println(ret);
         return ret;
     }
 

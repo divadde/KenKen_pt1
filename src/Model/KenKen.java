@@ -5,12 +5,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public final class KenKen implements GridGame, Serializable {
-    private int dimension;
-    private Cell[][] table;
+    private static KenKen INSTANCE = null;
+    private static int dimension;
+    private static Cell[][] table;
 
     private static final long serialVersionUID = 9177631848186263965L;
 
-    public KenKen() {}
+    private KenKen() {}
+
+    public static synchronized KenKen getInstance(){
+        if(INSTANCE==null)
+            INSTANCE=new KenKen();
+        return INSTANCE;
+    }
 
 
     //copia profonda

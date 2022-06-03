@@ -1,6 +1,7 @@
 package Graphic.Command;
 
 import Model.GridGame;
+import Model.Informations;
 
 import javax.swing.*;
 import java.io.EOFException;
@@ -28,16 +29,17 @@ public class LoadGameCommand implements Command {
             JOptionPane.showMessageDialog(null,"Annullata scelta del file");
         }
         try {
-            GridGame read = null;
+            Informations read = null;
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(absolutePath));
             while(true) {
                 try {
-                    read = (GridGame) oos.readObject();
+                    read = (Informations) oos.readObject();
+                    System.out.println("letto file");
                     System.out.println(read.getDimension());
                     gg.setDimension(read.getDimension());
-                    gg.changeReferenceTable(read.getReferenceTable());
-                    System.out.println(read);
-                    System.out.println(read.constrString());
+                    gg.changeReferenceTable(read.getTable());
+                    System.out.println(gg);
+                    //System.out.println(gg.constrString());
                 }catch(EOFException e1){
                     System.out.println("lettura file");
                     break;
