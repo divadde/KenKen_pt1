@@ -7,8 +7,18 @@ public abstract class Constraint implements Cloneable, Serializable {
     protected int id;
     protected static int nextId=0;
 
+    //modifica
     public abstract void addCell(CellIF ec);
     public abstract void setValues();
+
+    //controllo
+    public abstract boolean verify();
+
+    public int getId(){
+        return id;
+    }
+
+
     @Override
     public Constraint clone() {
         try {
@@ -17,12 +27,6 @@ public abstract class Constraint implements Cloneable, Serializable {
         } catch (CloneNotSupportedException e) {
             throw new Error(e);
         }
-    }
-
-    public abstract boolean verify();
-
-    public int getId(){
-        return id;
     }
 
     @Override
@@ -37,4 +41,5 @@ public abstract class Constraint implements Cloneable, Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

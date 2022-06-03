@@ -13,10 +13,8 @@ public final class ConcreteGenerator extends Generator {
     private int minGrandezza;
 
 
-    public ConcreteGenerator(GridGame egg, int dimension){
+    public ConcreteGenerator(GridGame egg){
         this.gg=egg;
-        this.dimension=dimension;
-        egg.setDimension(dimension);
     }
 
     /*
@@ -28,21 +26,21 @@ public final class ConcreteGenerator extends Generator {
 
     @Override
     public void insertNumbers() {
-        for(int i=0; i<dimension; i++){
-            for(int j=0; j<dimension; j++){
-                gg.setCell(((i+j)%dimension)+1,i,j);
+        for(int i=0; i<gg.getDimension(); i++){
+            for(int j=0; j<gg.getDimension(); j++){
+                gg.setCell(((i+j)%gg.getDimension())+1,i,j);
             }
         }
     }
 
     @Override
     public void shuffleNumbers() { //shuffle pari alla dimensione
-        for(int i=0; i<dimension; i++) {
-            int x = (int) (Math.random() * dimension);
-            int y = (int) (Math.random() * dimension);
+        for(int i=0; i<gg.getDimension(); i++) {
+            int x = (int) (Math.random() * gg.getDimension());
+            int y = (int) (Math.random() * gg.getDimension());
             if (x != y) gg.switchRow(x, y);
-            int z = (int) (Math.random() * dimension);
-            int k = (int) (Math.random() * dimension);
+            int z = (int) (Math.random() * gg.getDimension());
+            int k = (int) (Math.random() * gg.getDimension());
             if (z != k) gg.switchColumn(z, k);
         }
         System.out.println(gg);
@@ -180,8 +178,8 @@ public final class ConcreteGenerator extends Generator {
 
 
     private int chooseCageDimension(){
-        if (dimension<=4) {
-            return (int) (Math.random() * dimension);
+        if (gg.getDimension()<=4) {
+            return (int) (Math.random() * gg.getDimension());
         }
         return 2+(int) (Math.random() * 1);
     }
@@ -190,9 +188,9 @@ public final class ConcreteGenerator extends Generator {
         CellIF ret=null;
         if(c.getY()>0) //CONTROLLO NORD
             ret=gg.getCell(c.getX(),c.getY()-1);
-        if(c.getY()<dimension-1) //CONTROLLO SUD
+        if(c.getY()<gg.getDimension()-1) //CONTROLLO SUD
             ret=gg.getCell(c.getX(),c.getY()+1);
-        if(c.getX()<dimension-1) //CONTROLLO EST
+        if(c.getX()<gg.getDimension()-1) //CONTROLLO EST
             ret=gg.getCell(c.getX()+1,c.getY());
         if(c.getX()>0) //CONTROLLO OVEST
             ret=gg.getCell(c.getX()-1,c.getY());
@@ -215,7 +213,7 @@ public final class ConcreteGenerator extends Generator {
         DESTRA {
             public CellIF doOp(CellIF currPoint) {
                 int nextY = currPoint.getY()+1;
-                if(nextY<dimension && !(gg.getCell(currPoint.getX(),nextY).hasConstraint()))
+                if(nextY<gg.getDimension() && !(gg.getCell(currPoint.getX(),nextY).hasConstraint()))
                     return gg.getCell(currPoint.getX(),nextY);
                 return null;
             }
@@ -229,7 +227,7 @@ public final class ConcreteGenerator extends Generator {
         }, GIU {
             public CellIF doOp(CellIF currPoint) {
                 int nextX = currPoint.getX()+1;
-                if(nextX<dimension && !(gg.getCell(nextX,currPoint.getY()).hasConstraint()))
+                if(nextX<gg.getDimension() && !(gg.getCell(nextX,currPoint.getY()).hasConstraint()))
                     return gg.getCell(nextX,currPoint.getY());
                 return null;
             }
@@ -246,8 +244,8 @@ public final class ConcreteGenerator extends Generator {
     }
 
     private CellIF nextPoint(){
-        for(int i=0; i<dimension; i++){
-            for(int j=0; j<dimension; j++){
+        for(int i=0; i<gg.getDimension(); i++){
+            for(int j=0; j<gg.getDimension(); j++){
                 if (!(gg.getCell(i,j).hasConstraint()))
                     return gg.getCell(i,j);
             }

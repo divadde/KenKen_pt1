@@ -3,16 +3,24 @@ package Model;
 import java.io.Serializable;
 
 public interface CellIF extends Serializable {
+
+    //interazione col gioco
     boolean setValue(int value);
-    void setCageState(boolean state);
-    boolean getState();
     int getValue();
+    void clean();
+
+    //modifica cella
     void setX(int x);
     int getX();
-    int getY();
     void setY(int y);
-    boolean hasConstraint();
-    Constraint getConstraint();
+    int getY();
     void setConstraint(Constraint c);
-    void clean();
+    Constraint getConstraint();
+    void setCageState(boolean state);
+    boolean getState();
+
+    //controlli
+    boolean hasConstraint();
+
+    //util
 }

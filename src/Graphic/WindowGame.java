@@ -8,11 +8,11 @@ import javax.swing.*;
 
 public class WindowGame extends JFrame {
 
-    public WindowGame(String title, GridGame gg){
+    public WindowGame(String title){
         Mediator mediator = new Mediator();
 
         Menu m = new Menu(mediator);
-        GamePanel gp = new GamePanel(gg,mediator);
+        GamePanel gp = new GamePanel(mediator);
 
         add(gp);
         setJMenuBar(m);

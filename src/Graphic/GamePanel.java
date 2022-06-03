@@ -17,10 +17,10 @@ public class GamePanel extends JPanel implements ActionListener, Subject {
     private Mediator mediator;
 
 
-    public GamePanel(GridGame gg, Mediator mediator){
+    public GamePanel(Mediator mediator){
         setMediator(mediator);
 
-        GridPanel gp=new GridPanel(this,gg,mediator);
+        GridPanel gp=new GridPanel(mediator);
         BacktrackingPanel backtrackingPanel = new BacktrackingPanel(mediator);
 
         nuovaPartita=new JButton("Nuova partita");

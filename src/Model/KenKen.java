@@ -12,18 +12,6 @@ public final class KenKen implements GridGame, Serializable {
 
     public KenKen() {}
 
-    /* NON USATO
-    public Table(int dimension) {
-        this.dimension = dimension;
-        table = new Cell[dimension][dimension];
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                table[i][j] = new Cell(i, j);
-            }
-        }
-    }
-    */
-
 
     //copia profonda
     @Override

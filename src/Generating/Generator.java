@@ -6,7 +6,6 @@ import Model.GridGame;
 public abstract class Generator {
 
     protected static GridGame gg;
-    protected static int dimension;
 
     public void generate(){
         insertNumbers();

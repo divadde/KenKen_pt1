@@ -5,6 +5,7 @@ import Graphic.Mediator.Request;
 import Graphic.Mediator.Subject;
 import Model.Constraint;
 import Model.GridGame;
+import Model.KenKen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,33 +15,32 @@ import java.util.List;
 
 public class GridPanel extends JPanel implements Subject {
     private Mediator mediator;
-    private GridGame gg; //riferimento alla parte logica
+    private GridGame gridGame; //riferimento alla parte logica
     private List<Constraint> constr;
     private GameCell[][] grigliaGrafica;
     private boolean suggerimentiEnabled;
 
-    public GridPanel(GamePanel gp, GridGame gg, Mediator mediator) {
+    public GridPanel(Mediator mediator) {
         setMediator(mediator);
+        gridGame=new KenKen();
+        suggerimentiEnabled=false;
 
-        this.gg=gg;
-        setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
         setSize(400,400);
         setLocation(100,50);
-        suggerimentiEnabled=false;
     }
 
     public void configura(){
         if(grigliaGrafica!=null)
             rimuoviCelle();
-        constr = gg.listOfConstraint();
-        grigliaGrafica = new GameCell[gg.getDimension()][gg.getDimension()];
-        for(int i=0; i<gg.getDimension(); i++){
-            for(int j=0; j<gg.getDimension(); j++) {
+        constr = gridGame.listOfConstraint();
+        grigliaGrafica = new GameCell[gridGame.getDimension()][gridGame.getDimension()];
+        for(int i=0; i<gridGame.getDimension(); i++){
+            for(int j=0; j<gridGame.getDimension(); j++) {
                 grigliaGrafica[i][j] = new GameCell(i,j);
                 this.add(grigliaGrafica[i][j]);
-                if(constr.contains(gg.getConstraint(i,j))){
+                if(constr.contains(gridGame.getConstraint(i,j))){
                     grigliaGrafica[i][j].isDrawCell();
-                    constr.remove(gg.getConstraint(i,j));
+                    constr.remove(gridGame.getConstraint(i,j));
                 }
             }
         }
@@ -49,9 +49,9 @@ public class GridPanel extends JPanel implements Subject {
     }
 
     public void aggiornaValori(){
-        for(int i=0; i<gg.getDimension(); i++){
-            for(int j=0; j<gg.getDimension(); j++){
-                int value = gg.getTable()[i][j].getValue();
+        for(int i=0; i<gridGame.getDimension(); i++){
+            for(int j=0; j<gridGame.getDimension(); j++){
+                int value = gridGame.getTable()[i][j].getValue();
                 if(value!=0)
                     grigliaGrafica[i][j].setText(Integer.toString(value));
             }
@@ -72,12 +72,12 @@ public class GridPanel extends JPanel implements Subject {
     }
 
     private void coloraCelle(){
-        for(int i=0; i<gg.getDimension(); i++){
-            for(int j=0; j<gg.getDimension(); j++) {
-                if(gg.getCell(i,j).getValue()==0)
+        for(int i=0; i<gridGame.getDimension(); i++){
+            for(int j=0; j<gridGame.getDimension(); j++) {
+                if(gridGame.getCell(i,j).getValue()==0)
                     grigliaGrafica[i][j].setBackground(new Color(255,255,255));
                 else {
-                    if (gg.getCell(i,j).getState())
+                    if (gridGame.getCell(i,j).getState())
                         grigliaGrafica[i][j].setBackground(new Color(80, 220, 80));
                     else
                         grigliaGrafica[i][j].setBackground(new Color(220, 80, 80));
@@ -87,8 +87,8 @@ public class GridPanel extends JPanel implements Subject {
     }
 
     private void eliminaColori(){
-        for(int i=0; i<gg.getDimension(); i++) {
-            for (int j = 0; j < gg.getDimension(); j++) {
+        for(int i=0; i<gridGame.getDimension(); i++) {
+            for (int j = 0; j < gridGame.getDimension(); j++) {
                 grigliaGrafica[i][j].setBackground(new Color(255,255,255));
             }
         }
@@ -97,31 +97,31 @@ public class GridPanel extends JPanel implements Subject {
     @Override
     public void handleRequest(Request request) {
         if(request.getTipo()==Request.Tipo.READY){
-            request.getCommand().execute(gg);
-            setLayout(new GridLayout(gg.getDimension(),gg.getDimension(),1,1));
+            request.getCommand().execute(gridGame);
+            setLayout(new GridLayout(gridGame.getDimension(),gridGame.getDimension(),1,1));
             configura();
             repaint();
             revalidate();
         }
         else if(request.getTipo()==Request.Tipo.SAVEGAME){
-            request.getCommand().execute(gg);
+            request.getCommand().execute(gridGame);
         }
         else if(request.getTipo()==Request.Tipo.LOADGAME){
-            request.getCommand().execute(gg);
-            setLayout(new GridLayout(gg.getDimension(), gg.getDimension(), 1, 1));
+            request.getCommand().execute(gridGame);
+            setLayout(new GridLayout(gridGame.getDimension(), gridGame.getDimension(), 1, 1));
             configura();
             aggiornaValori();
         }
         else if(request.getTipo()==Request.Tipo.SHOWSOLUTION){
-            request.getCommand().execute(gg);
+            request.getCommand().execute(gridGame);
             aggiornaValori();
         }
         else if(request.getTipo()==Request.Tipo.NEXTSOLUTION){
-            request.getCommand().execute(gg);
+            request.getCommand().execute(gridGame);
             aggiornaValori();
         }
         else if(request.getTipo()==Request.Tipo.PREVIOUSSOLUTION){
-            request.getCommand().execute(gg);
+            request.getCommand().execute(gridGame);
             aggiornaValori();
         }
         else if(request.getTipo()==Request.Tipo.SHOWSUGGESTINGS){
@@ -147,7 +147,7 @@ public class GridPanel extends JPanel implements Subject {
         private boolean drawCell=false;
 
         public GameCell(int x, int y){
-            this.c=gg.getConstraint(x,y);
+            this.c=gridGame.getConstraint(x,y);
             this.x=x;
             this.y=y;
             addKeyListener(this);
@@ -172,18 +172,18 @@ public class GridPanel extends JPanel implements Subject {
         }
 
         private void drawBoarder(int x, int y){
-            int myId = gg.getConstraint(x,y).getId();
+            int myId = gridGame.getConstraint(x,y).getId();
             int left = 1;
             int top = 1;
             int bot = 1;
             int right = 1;
-            if(x-1<0 || myId!=gg.getConstraint(x-1,y).getId())
+            if(x-1<0 || myId!=gridGame.getConstraint(x-1,y).getId())
                 top+=5;
-            if(x+1>=gg.getDimension() || myId!=gg.getConstraint(x+1,y).getId())
+            if(x+1>=gridGame.getDimension() || myId!=gridGame.getConstraint(x+1,y).getId())
                 bot+=5;
-            if(y-1<0 || myId!=gg.getConstraint(x,y-1).getId())
+            if(y-1<0 || myId!=gridGame.getConstraint(x,y-1).getId())
                 left+=5;
-            if(y+1>=gg.getDimension() || myId!=gg.getConstraint(x,y+1).getId())
+            if(y+1>=gridGame.getDimension() || myId!=gridGame.getConstraint(x,y+1).getId())
                 right+=5;
             this.setBorder(BorderFactory.createMatteBorder(top,left,bot,right, Color.BLACK));
         }
@@ -199,21 +199,21 @@ public class GridPanel extends JPanel implements Subject {
             String text = getText();
             try{
                 if(text==null) {
-                    gg.removeValue(x,y);
+                    gridGame.removeValue(x,y);
                 }
                 else {
                     int value = Integer.parseInt(text);
-                    gg.addValue(value, x, y);
+                    gridGame.addValue(value, x, y);
                 }
                 if(suggerimentiEnabled)
                     coloraCelle();
                 System.out.println("modificata la cella " + x + "," + y);
-                System.out.println(gg.getCell(x, y).getState());
+                System.out.println(gridGame.getCell(x, y).getState());
             } catch (NumberFormatException ex) {
-                gg.removeValue(x,y);
+                gridGame.removeValue(x,y);
                 setText(null);
                 System.out.println("modificata la cella " + x + "," + y);
-                System.out.println(gg.getCell(x, y).getState());
+                System.out.println(gridGame.getCell(x, y).getState());
                 this.setBackground(Color.WHITE);
             }
         }
