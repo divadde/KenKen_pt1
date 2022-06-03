@@ -252,6 +252,7 @@ public final class KenKen implements GridGame, Serializable {
             inContrast.add(c);
         }
         private void removeInContrast(Cell c){
+
             inContrast.remove(c);
         }
 
@@ -289,6 +290,15 @@ public final class KenKen implements GridGame, Serializable {
 
         @Override
         public void clean() {
+            List<Cell> daEliminare = new LinkedList<Cell>();
+            for(Cell c: inContrast){
+                c.removeInContrast(this);
+                daEliminare.add(c);
+            }
+            for(Cell c: daEliminare) {
+                c.setKenKenState(c.inContrast.isEmpty());
+            }
+            inContrast.removeAll(daEliminare);
             value = 0;
             stateKenKen=false;
             stateCage=false;
