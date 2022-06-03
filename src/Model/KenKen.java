@@ -1,5 +1,8 @@
 package Model;
 
+import Backtracking.*;
+import Generating.*;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,6 +194,16 @@ public final class KenKen implements GridGame, Serializable {
             }
         }
         return list;
+    }
+
+    @Override
+    public Generator getGenerator() {
+        return KenKenGenerator.getInstance(this);
+    }
+
+    @Override
+    public Backtracking getBacktracking() {
+        return KenKenSolver.getInstance(this);
     }
 
     //usato dalla cella per verificare correttezza inserimento

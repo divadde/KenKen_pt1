@@ -5,16 +5,22 @@ import Model.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class ConcreteGenerator extends Generator {
-
-    private Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints prototipi todo
+public final class KenKenGenerator extends Generator {
+    private static KenKenGenerator INSTANCE = null;
+    private static Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints prototipi todo
     //todo aggiungi parametri
-    private int maxGrandezza;
-    private int minGrandezza;
+    private static int maxGrandezza;
+    private static int minGrandezza;
 
 
-    public ConcreteGenerator(GridGame egg){
-        this.gg=egg;
+    private KenKenGenerator(GridGame gg){
+        this.gg=gg;
+    }
+
+    public static synchronized KenKenGenerator getInstance(GridGame gg){
+        if(INSTANCE==null)
+            INSTANCE=new KenKenGenerator(gg);
+        return INSTANCE;
     }
 
     /*

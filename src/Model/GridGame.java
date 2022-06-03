@@ -34,11 +34,7 @@ public interface GridGame extends Serializable {
     void switchColumn(int i, int j);
     String constrString();
     List<Constraint> listOfConstraint();
-    default Generator getGenerator(){
-        return new ConcreteGenerator(this);
-    }
-    default Backtracking getBacktracking() {
-        return Solver.getInstance(this);
-    }
+    Generator getGenerator();
+    Backtracking getBacktracking();
     
 }

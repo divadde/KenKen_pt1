@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.ListIterator;
 
 //SINGLETON
-public final class Solver extends Backtracking<CellIF,Integer,MementoTable>{
-    private static Solver INSTANCE=null;
+public final class KenKenSolver extends Backtracking<CellIF,Integer,MementoTable>{
+    private static KenKenSolver INSTANCE=null;
     private int sol;
     private GridGame gg;
     private List<MementoTable> completeTables;
     private ListIterator<MementoTable> lit;
     private int maxSol;
 
-    private Solver(GridGame gg){
+    private KenKenSolver(GridGame gg){
         maxSol=10; //assegnate di default
         this.gg=gg;
         completeTables=new LinkedList<>();
@@ -27,9 +27,9 @@ public final class Solver extends Backtracking<CellIF,Integer,MementoTable>{
         //System.out.println(choosingPoints.size());
     }
 
-    public static synchronized Solver getInstance(GridGame gg){
+    public static synchronized KenKenSolver getInstance(GridGame gg){
         if(INSTANCE==null){
-            INSTANCE=new Solver(gg);
+            INSTANCE=new KenKenSolver(gg);
         }
         return INSTANCE;
     }
