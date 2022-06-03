@@ -9,7 +9,7 @@ import java.util.List;
 public interface GridGame extends Serializable {
 
     //interazione col gioco
-    boolean addValue(int val, int x, int y);
+    void addValue(int val, int x, int y);
     void removeValue(int x, int y);
     void clean();
 
@@ -20,14 +20,14 @@ public interface GridGame extends Serializable {
     Constraint getConstraint(int x, int y);
     void setCell(int value, int x, int y);
     CellIF getCell(int x, int y);
-    void setTable(CellIF[][] table);
-    CellIF[][] getTable();
     void changeReferenceTable(CellIF[][] table);
     CellIF[][] getReferenceTable();
 
     //controlli
     boolean isLegal(int val, int x, int y);
     boolean isCompleted();
+    MementoTable createMemento();
+    void setMemento(MementoTable memento);
 
     //util
     void switchRow(int i, int j);

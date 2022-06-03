@@ -51,7 +51,7 @@ public class GridPanel extends JPanel implements Subject {
     public void aggiornaValori(){
         for(int i=0; i<gridGame.getDimension(); i++){
             for(int j=0; j<gridGame.getDimension(); j++){
-                int value = gridGame.getTable()[i][j].getValue();
+                int value = gridGame.getCell(i,j).getValue();
                 if(value!=0)
                     grigliaGrafica[i][j].setText(Integer.toString(value));
             }

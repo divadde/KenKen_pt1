@@ -3,6 +3,7 @@ package Graphic.Command;
 import Backtracking.Backtracking;
 import Model.CellIF;
 import Model.GridGame;
+import Model.MementoTable;
 
 public class NextSolutionCommand implements Command {
 
@@ -12,9 +13,9 @@ public class NextSolutionCommand implements Command {
     @Override
     public void execute(GridGame gg) {
         Backtracking s = gg.getBacktracking();
-        CellIF[][] currSol = (CellIF[][]) s.nextSol();
+        MementoTable currSol = (MementoTable) s.nextSol();
         if(currSol!=null) {
-            gg.setTable(currSol);
+            gg.setMemento(currSol);
             System.out.println("NEXT SOLUTION");
         }
     }

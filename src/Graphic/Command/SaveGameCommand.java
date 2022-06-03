@@ -28,7 +28,7 @@ public class SaveGameCommand implements Command {
         }
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(absolutePath));
-            Informations info = new Informations(gg.getDimension(),gg.getReferenceTable());
+            Informations info = new Informations(gg.getDimension(), gg.getReferenceTable());
             oos.writeObject(info);
             oos.flush();
             oos.close();

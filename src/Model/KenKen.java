@@ -20,9 +20,15 @@ public final class KenKen implements GridGame, Serializable {
     }
 
 
-    //copia profonda
-    @Override
-    public CellIF[][] getTable(){
+    public MementoTable createMemento(){
+        return new MementoTable(getTable());
+    }
+    public void setMemento(MementoTable memento) {
+        setTable(memento.getTable());
+    }
+
+    //copia profonda, usato dal memento per memorizzare le soluzioni.
+    private CellIF[][] getTable(){
         Cell[][] ret = new Cell[dimension][dimension];
         for(int i=0; i<dimension; i++){
             for(int j=0; j<dimension; j++)
@@ -30,18 +36,8 @@ public final class KenKen implements GridGame, Serializable {
         }
         return ret;
     }
-
-    @Override
-    public CellIF[][] getReferenceTable(){
-        return table;
-    }
-    @Override
-    public void changeReferenceTable(CellIF[][] table){
-        this.table=(Cell[][]) table;
-    }
-
-    @Override
-    public void setTable(CellIF[][] table){
+    //usato per impostare lo stato dal memento
+    private void setTable(CellIF[][] table){
         clean();
         for(int i=0; i<dimension; i++){
             for(int j=0; j<dimension; j++){
@@ -50,28 +46,36 @@ public final class KenKen implements GridGame, Serializable {
         }
     }
 
-    @Override //todo, forse ci sarà da aggiustare qualcosa per la parte grafica
-    public boolean addValue(int val, int x, int y) {
+
+    //usato per memorizzare l'informazione (Serializzazione)
+    @Override
+    public CellIF[][] getReferenceTable(){
+        return table;
+    }
+    //usato per cambiare riferimento alla tabella (Serializzazione)
+    @Override
+    public void changeReferenceTable(CellIF[][] table){
+        this.table=(Cell[][]) table;
+    }
+
+
+    @Override
+    public void addValue(int val, int x, int y) {
         table[x][y].setValue(val);
         //System.out.println(this);
-        return table[x][y].getState();
     }
-
-    private boolean verifyNumber(int val){
-        return val>=1 && val<=dimension;
-    }
-
     @Override
     public void removeValue(int x, int y) {
         table[x][y].clean();
     }
-
     @Override
     public boolean isLegal(int val, int x, int y){
-        boolean ret = addValue(val,x,y);
+        addValue(val,x,y);
+        boolean ret = table[x][y].getState();
         removeValue(x,y);
         return ret;
     }
+
 
     @Override
     public boolean isCompleted(){
@@ -97,7 +101,6 @@ public final class KenKen implements GridGame, Serializable {
     public void setConstraint(Constraint c, int x, int y) {
         table[x][y].setConstraint(c);
     }
-
     @Override
     public Constraint getConstraint(int x, int y) {
         return table[x][y].getConstraint();
@@ -108,7 +111,6 @@ public final class KenKen implements GridGame, Serializable {
         table[x][y] = new Cell(x, y);
         table[x][y].setValue(value);
     }
-
     @Override
     public CellIF getCell(int x, int y) {
         return table[x][y];
@@ -124,7 +126,6 @@ public final class KenKen implements GridGame, Serializable {
             }
         }
     }
-
     @Override
     public int getDimension() {
         return dimension;
@@ -133,8 +134,6 @@ public final class KenKen implements GridGame, Serializable {
     //todo forse sarà utile se vogliamo introdurre un oggetto Constraint (per esempio un oggetto che regola la presenza di ripetizioni all'interno di una riga)
     private List<Cell> verify(int val, int x, int y) {
         List<Cell> ret = new LinkedList<>();
-        Cell[] row = getRow(x);
-        Cell[] column = getColumn(y);
         for (int i = 0; i < dimension; i++) {
             if (i != y && val == table[x][i].getValue()) {
                 ret.add(table[x][i]);
@@ -146,17 +145,6 @@ public final class KenKen implements GridGame, Serializable {
         return ret;
     }
 
-    private Cell[] getRow(int x) {
-        return table[x];
-    }
-
-    private Cell[] getColumn(int x) {
-        Cell[] ret = new Cell[dimension];
-        for (int i = 0; i < dimension; i++)
-            ret[i] = table[i][x];
-        return ret;
-    }
-
     //scambio solo i valori!
     @Override
     public void switchRow(int i, int j) {
@@ -164,7 +152,6 @@ public final class KenKen implements GridGame, Serializable {
             table[i][n].switchValue(table[j][n]);
         }
     }
-
     //scambio solo i valori!
     @Override
     public void switchColumn(int i, int j) {
@@ -206,12 +193,18 @@ public final class KenKen implements GridGame, Serializable {
         return list;
     }
 
+    //usato dalla cella per verificare correttezza inserimento
+    private boolean verifyNumber(int val){
+        return val>=1 && val<=dimension;
+    }
+
+
     private class Cell implements CellIF, Serializable {
         private int value;
         private int x;
         private int y;
         private Constraint cage;
-        private boolean stateKenKen;
+        private boolean stateKenKen; //state rules
         private boolean stateCage;
         private List<Cell> inContrast;
 
@@ -226,6 +219,13 @@ public final class KenKen implements GridGame, Serializable {
             stateCage=false;
         }
 
+        //costruttore per copia, è sufficiente memorizzare posizione e valore //todo verifica correttezza
+        public Cell (Cell c){
+            this.x = c.getX();
+            this.y = c.getY();
+            this.value = c.getValue();
+        }
+
         public void switchValue(Cell c){
             int tmp=this.value;
             this.value=c.getValue();
@@ -235,20 +235,14 @@ public final class KenKen implements GridGame, Serializable {
             value=x;
         }
 
-        //costruttore per copia, è sufficiente memorizzare posizione e valore //todo verifica correttezza
-        public Cell (Cell c){
-            this.x = c.getX();
-            this.y = c.getY();
-            this.value = c.getValue();
-        }
-
-        public void addInContrast(Cell c){
+        private void addInContrast(Cell c){
             inContrast.add(c);
         }
-        public void removeInContrast(Cell c){
+        private void removeInContrast(Cell c){
             inContrast.remove(c);
         }
 
+        @Override
         public boolean getState(){
             return stateKenKen && stateCage;
         }
@@ -280,7 +274,7 @@ public final class KenKen implements GridGame, Serializable {
             this.y = y;
         }
 
-        @Override
+        @Override //todo non devo rimuovere anche celle in contrasto?
         public void clean() {
             value = 0;
             stateKenKen=false;

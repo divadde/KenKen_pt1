@@ -2,6 +2,7 @@ package Backtracking;
 
 import Model.CellIF;
 import Model.GridGame;
+import Model.MementoTable;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -9,12 +10,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 //SINGLETON
-public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
+public final class Solver extends Backtracking<CellIF,Integer,MementoTable>{
     private static Solver INSTANCE=null;
     private int sol;
     private GridGame gg;
-    private List<CellIF[][]> completeTables;
-    private ListIterator<CellIF[][]> lit;
+    private List<MementoTable> completeTables;
+    private ListIterator<MementoTable> lit;
     private int maxSol;
 
     private Solver(GridGame gg){
@@ -56,7 +57,7 @@ public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
 
     @Override
     protected void submitSolution(CellIF cell) {
-        completeTables.add(gg.getTable());
+        completeTables.add(gg.createMemento());
         sol++;
         System.out.println("Soluzione "+sol+" trovata!");
     }
@@ -106,14 +107,14 @@ public final class Solver extends Backtracking<CellIF,Integer,CellIF[][]>{
 
 
     @Override
-    public CellIF[][] nextSol() {
+    public MementoTable nextSol() {
         if(lit.hasNext())
             return lit.next();
         return null;
     }
 
     @Override
-    public CellIF[][] prevSol() {
+    public MementoTable prevSol() {
         if(lit.hasPrevious())
             return lit.previous();
         return null;
