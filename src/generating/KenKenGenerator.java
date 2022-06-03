@@ -7,10 +7,6 @@ import java.util.List;
 
 public final class KenKenGenerator extends Generator {
     private static KenKenGenerator INSTANCE = null;
-    private static Constraint constraint = new Cage(); //aggiungi possibilità di aggiungere una lista di constraints prototipi todo
-    //todo aggiungi parametri
-    private static int maxGrandezza;
-    private static int minGrandezza;
 
 
     private KenKenGenerator(GridGame gg){
@@ -21,6 +17,10 @@ public final class KenKenGenerator extends Generator {
         if(INSTANCE==null)
             INSTANCE=new KenKenGenerator(gg);
         return INSTANCE;
+    }
+
+    public void setPrototypeConstraint(Constraint c){
+        constraint=c;
     }
 
     /*

@@ -6,8 +6,9 @@ import java.util.List;
 
 public class Cage extends Constraint implements Serializable {
     private Operation op;
-    private List<CellIF> cells;
+    private LinkedList<CellIF> cells;
     private int result;
+    private boolean relazPrecedenza;
 
     private static final long serialVersionUID = 7477631348882269149L;
 
@@ -17,8 +18,8 @@ public class Cage extends Constraint implements Serializable {
     }
 
     private enum Operation implements Operable, Serializable {
-        //Assunzione: parto dal presupposto che ricevo la lista con elementi ordinati dal più grande al più piccolo
-        //todo modifica il fatto che da parte dell'utente si possa scegliere la precedenza
+        //Se non c'è relazione di precedenza:
+        // parto dal presupposto che ricevo la lista con elementi ordinati dal più grande al più piccolo
         ADDIZIONE {
             @Override
             public int doOp(List<Integer> l){
@@ -64,52 +65,57 @@ public class Cage extends Constraint implements Serializable {
             }
         };
 
-        public static Operation getRandomOp(){
-            int choose = (int) (Math.random()*4);
-            switch(choose){
-                case 0: return Operation.ADDIZIONE;
-                case 1: return Operation.SOTTRAZIONE;
-                case 2: return Operation.MOLTIPLICAZIONE;
-                default: return Operation.DIVISIONE;
-            }
+        public static Operation getRandomOp(List<Operation> notIncluded){
+            List<Operation> available = availableOperations(notIncluded);
+            int choose = (int) (Math.random()*available.size());
+            return available.get(choose);
         }
-        public static Operation getCommutativeRandomOp(){
-            int choose = (int) (Math.random()*2);
-            switch(choose){
-                case 0: return Operation.ADDIZIONE;
-                default: return Operation.MOLTIPLICAZIONE;
-            }
+
+        private static List<Operation> availableOperations(List<Operation> notIncluded){
+            List<Operation> list = new LinkedList<>();
+            list.add(Operation.ADDIZIONE); list.add(Operation.SOTTRAZIONE);
+            list.add(Operation.MOLTIPLICAZIONE); list.add(Operation.DIVISIONE);
+            list.removeAll(notIncluded);
+            return list;
         }
 
     }
 
     public Cage(){
         cells=new LinkedList<CellIF>();
+        relazPrecedenza=false; //di default non attivata
+    }
+
+    public void setRelazPrecedenza(boolean relazPrecedenza) {
+        this.relazPrecedenza = relazPrecedenza;
     }
 
     @Override
     public void setValues(){
+        System.out.println(relazPrecedenza);
         setRandomOp();
-        List<Integer> listOfInteger = getValues(cells);
+        List<Integer> listOfInteger = getValues();
         result=op.doOp(listOfInteger);
     }
 
-    //todo, si potrebbe migliorare la scelta dell'operazione
     private void setRandomOp(){
-        if(cells.size()==2) { //se le celle sono solo due, allora posso dare anche la sottrazione o la divisione
-            if(cells.get(0).getValue()%cells.get(1).getValue()==0)
-                op=Operation.getRandomOp();
-            else
-                op=Operation.SOTTRAZIONE;
+        List<Operation> excludedOp = new LinkedList<>();
+        if (cells.size() == 2 && (cells.get(0).getValue() - cells.get(1).getValue()>0)) {
+            //se le celle sono solo due, allora posso dare anche la sottrazione o la divisione
+            if (cells.get(0).getValue() % cells.get(1).getValue() != 0) {
+                excludedOp.add(Operation.DIVISIONE);
+            }
         }
-        else{
-            op=Operation.getCommutativeRandomOp();
+        else {
+            excludedOp.add(Operation.DIVISIONE);
+            excludedOp.add(Operation.SOTTRAZIONE);
         }
+        op = Operation.getRandomOp(excludedOp);
     }
 
-    @Override
+    @Override //lista di celle ordinata dalla prima aggiunta all'ultima
     public void addCell(CellIF ec){
-        cells.add(ec);
+        cells.addLast(ec);
     }
 
     @Override
@@ -121,11 +127,11 @@ public class Cage extends Constraint implements Serializable {
 
     @Override
     public boolean verify() {
-        if (!arePositive(getValues(cells)) || (arePositive(getValues(cells)) && result == op.doOp(getValues(cells))))
+        if (!arePositive(getValues()) || (arePositive(getValues()) && result == op.doOp(getValues())))
             validaCelle(true);
-        else if (arePositive(getValues(cells)) && !(result == op.doOp(getValues(cells))))
+        else if (arePositive(getValues()) && !(result == op.doOp(getValues())))
             validaCelle(false);
-        return !arePositive(getValues(cells)) || result == op.doOp(getValues(cells));
+        return !arePositive(getValues()) || result == op.doOp(getValues());
     }
 
     private void validaCelle(boolean state){
@@ -142,11 +148,11 @@ public class Cage extends Constraint implements Serializable {
         return true;
     }
 
-    //Assunzione: i valori sono ordinati in maniera decrescente
-    private List<Integer> getValues(List<CellIF> lec){
-        List<Integer> ret = new LinkedList<>();
-        for(CellIF ec: lec) ret.add(ec.getValue());
-        ret.sort((Integer i1, Integer i2)->i2.compareTo(i1));
+    private List<Integer> getValues(){
+        LinkedList<Integer> ret = new LinkedList<>();
+        for(CellIF ec: cells) ret.addLast(ec.getValue());
+        if(!relazPrecedenza) //se non c'è relazione di precedenza i valori sono ordinati in maniera decrescente
+            ret.sort((Integer i1, Integer i2)->i2.compareTo(i1));
         return ret;
     }
 
