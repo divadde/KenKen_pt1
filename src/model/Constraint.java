@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public abstract class Constraint implements Cloneable, Serializable {
     protected int id;
@@ -37,9 +36,5 @@ public abstract class Constraint implements Cloneable, Serializable {
         return id == that.id;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 
 }

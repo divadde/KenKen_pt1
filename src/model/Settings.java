@@ -1,6 +1,6 @@
 package model;
 
-
+//possibilità di aggiunta di un Builder?
 public class Settings {
     private int dimension;
     private int maxSol;

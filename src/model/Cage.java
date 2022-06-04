@@ -16,10 +16,7 @@ public class Cage extends Constraint implements Serializable {
     private interface Operable {
         int doOp(List<Integer> l);
     }
-
     private enum Operation implements Operable, Serializable {
-        //Se non c'è relazione di precedenza:
-        // parto dal presupposto che ricevo la lista con elementi ordinati dal più grande al più piccolo
         ADDIZIONE {
             @Override
             public int doOp(List<Integer> l){
@@ -98,6 +95,7 @@ public class Cage extends Constraint implements Serializable {
         result=op.doOp(listOfInteger);
     }
 
+    //OK: ma, possiamo eliminare la dipendenza dalla dimensione?
     private void setRandomOp(){
         List<Operation> excludedOp = new LinkedList<>();
         if (cells.size() == 2 && (cells.get(0).getValue() - cells.get(1).getValue()>0)) {
@@ -121,7 +119,7 @@ public class Cage extends Constraint implements Serializable {
     @Override
     public Constraint clone() {
         Cage c = (Cage) super.clone();
-        c.cells = new LinkedList<>();
+        c.cells = new LinkedList<>(); //assegno una nuova lista vuota per evitare aliasing con le altre gabbie
         return c;
     }
 

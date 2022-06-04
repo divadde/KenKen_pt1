@@ -3,11 +3,11 @@ package generating;
 import model.Constraint;
 import model.GridGame;
 
-//template method
+//TEMPLATE METHOD
 public abstract class Generator {
 
     protected static GridGame gg;
-    protected static Constraint constraint = null; //aggiungi possibilità di aggiungere una lista di constraints prototipi todo
+    protected static Constraint constraint = null; //prototype
     //todo aggiungi parametri
     protected static int maxGrandezza;
     protected static int minGrandezza;

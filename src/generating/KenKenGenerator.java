@@ -19,18 +19,8 @@ public final class KenKenGenerator extends Generator {
         return INSTANCE;
     }
 
-    public void setPrototypeConstraint(Constraint c){
-        constraint=c;
-    }
 
-    /*
-    @Override
-    public Generator factoryMethod(GridGame gg, int dimension) {
-        return new ConcreteGenerator(gg,dimension);
-    }
-     */
-
-    @Override
+    @Override //OK
     public void insertNumbers() {
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++){
@@ -39,7 +29,7 @@ public final class KenKenGenerator extends Generator {
         }
     }
 
-    @Override
+    @Override //OK
     public void shuffleNumbers() { //shuffle pari alla dimensione
         for(int i=0; i<gg.getDimension(); i++) {
             int x = (int) (Math.random() * gg.getDimension());
@@ -49,14 +39,13 @@ public final class KenKenGenerator extends Generator {
             int k = (int) (Math.random() * gg.getDimension());
             if (z != k) gg.switchColumn(z, k);
         }
-        System.out.println(gg);
     }
 
     /*
     @Override
     //V1 - problemi? no...
     public void addConstraints() {
-        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
+        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA
         //constraint = new Cage();
         while(true){
             CellIF nextCell = nextPoint();
@@ -66,7 +55,7 @@ public final class KenKenGenerator extends Generator {
                 gg.setConstraint(c,nextCell.getX(),nextCell.getY());
                 //scegli numero randomico di passi
                 int n = chooseCageDimension();
-                for(int i=0; i<n; i++){ //todo se non si può raggiungere la dimensione prestabilita?
+                for(int i=0; i<n; i++){
                     CellIF lastCell=null;
                     if(nextCell!=null) lastCell=nextCell;
                     else break;
@@ -95,7 +84,7 @@ public final class KenKenGenerator extends Generator {
     //V2 - problemi, forse no
     @Override
     public void addConstraints() {
-        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
+        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA
         //constraint = new Cage();
         while(true){
             CellIF nextCell = nextPoint();
@@ -105,7 +94,7 @@ public final class KenKenGenerator extends Generator {
                 gg.setConstraint(c,nextCell.getX(),nextCell.getY());
                 //scegli numero randomico di passi
                 int n = chooseCageDimension();
-                for(int i=0; i<n; i++){ //todo se non si può raggiungere la dimensione prestabilita?
+                for(int i=0; i<n; i++){
                     CellIF lastCell=null;
                     if(nextCell!=null) lastCell=nextCell;
                     else break;
@@ -136,53 +125,50 @@ public final class KenKenGenerator extends Generator {
 
 
 
-    @Override
-    //V3 - problemi
+    @Override //OK
+    //V3 - problemi?
     public void addConstraints() {
-        //LO AGGIUNGO QUI MA POI VA RIMOSSO (va creata una lista di prototipi)! è SOLO UNA PROVA todo:
-        //constraint = new Cage();
-        while(true){
-            CellIF nextCell = nextPoint();
-            if(nextCell==null) break; //abbiamo finito
-            else {
-                Constraint c = constraint.clone();
-                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
-                //scegli numero randomico di passi
-                int n = chooseCageDimension();
-                for(int i=0; i<n; i++){ //todo se non si può raggiungere la dimensione prestabilita?
-                    CellIF lastCell=null;
-                    if(nextCell!=null) lastCell=nextCell;
-                    else break;
-                    //scegli direzioni randomiche
-                    Direction d = Direction.DESTRA.chooseRandomly();
-                    nextCell = d.doOp(lastCell);
-                    if(nextCell!=null) gg.setConstraint(c,nextCell.getX(),nextCell.getY());
-                    else if(i==0){ //in caso di cella singola
-                        List<Direction> l = addDirections();
-                        while(nextCell==null){
-                            l.remove(d);
-                            if(l.isEmpty()) { //cella singola ingabbiata, mi faccio inglobare da altri constraint
-                                Constraint vicino = searchNear(lastCell).getConstraint();
-                                gg.setConstraint(vicino,lastCell.getX(), lastCell.getY());
-                                vicino.setValues();
-                                break;
-                            }
-                            d = l.get(chooseRandomic(l.size()));
-                            nextCell = d.doOp(lastCell);
-                            if(nextCell!=null) {
-                                gg.setConstraint(c,nextCell.getX(),nextCell.getY());
+        if(constraint!=null) {
+            while (true) {
+                CellIF nextCell = nextPoint();
+                if (nextCell == null) break; //se non c'è altra cella, abbiamo finito
+                else {
+                    Constraint c = constraint.clone();
+                    gg.setConstraint(c, nextCell.getX(), nextCell.getY());
+                    int n = chooseCageDimension(); //scegli numero randomico di passi
+                    for (int i = 0; i < n; i++) {
+                        CellIF lastCell = null;
+                        if (nextCell != null) lastCell = nextCell;
+                        else break;
+                        Direction d = Direction.chooseRandomly(); //scegli direzioni randomiche
+                        nextCell = d.doOp(lastCell);
+                        if (nextCell != null) gg.setConstraint(c, nextCell.getX(), nextCell.getY());
+                        else if (i == 0) { //in caso di cella singola
+                            List<Direction> l = addDirections();
+                            while (nextCell == null) {
+                                l.remove(d);
+                                if (l.isEmpty()) { //cella singola ingabbiata, mi faccio inglobare da altri constraint
+                                    Constraint vicino = searchNear(lastCell).getConstraint();
+                                    gg.setConstraint(vicino, lastCell.getX(), lastCell.getY());
+                                    vicino.setValues();
+                                    break;
+                                }
+                                d = l.get(chooseRandomic(l.size()));
+                                nextCell = d.doOp(lastCell);
+                                if (nextCell != null) {
+                                    gg.setConstraint(c, nextCell.getX(), nextCell.getY());
+                                }
                             }
                         }
                     }
+                    c.setValues(); //setta i valori del constraint
                 }
-                //setta i valori del constraint
-                c.setValues();
             }
+            //System.out.println(gg.constrString());
         }
-        System.out.println(gg.constrString());
     }
 
-
+    //OK: aggiunta selezione sulle dimensioni?
     private int chooseCageDimension(){
         if (gg.getDimension()<=4) {
             return (int) (Math.random() * gg.getDimension());
@@ -190,19 +176,25 @@ public final class KenKenGenerator extends Generator {
         return 2+(int) (Math.random() * 1);
     }
 
+    //OK
     private CellIF searchNear(CellIF c){
         CellIF ret=null;
-        if(c.getY()>0) //CONTROLLO NORD
-            ret=gg.getCell(c.getX(),c.getY()-1);
-        if(c.getY()<gg.getDimension()-1) //CONTROLLO SUD
-            ret=gg.getCell(c.getX(),c.getY()+1);
-        if(c.getX()<gg.getDimension()-1) //CONTROLLO EST
-            ret=gg.getCell(c.getX()+1,c.getY());
-        if(c.getX()>0) //CONTROLLO OVEST
+        if(c.getY()>0) {//CONTROLLO NORD
+            ret = gg.getCell(c.getX(), c.getY() - 1);
+        }
+        else if(c.getY()<gg.getDimension()-1) {//CONTROLLO SUD
+            ret = gg.getCell(c.getX(), c.getY() + 1);
+        }
+        else if(c.getX()<gg.getDimension()-1) {//CONTROLLO EST
+            ret = gg.getCell(c.getX() + 1, c.getY());
+        }
+        else if(c.getX()>0) {//CONTROLLO OVEST
             ret=gg.getCell(c.getX()-1,c.getY());
+        }
         return ret;
     }
 
+    //OK
     private int chooseRandomic(int n){
         return (int) Math.random()*n;
     }
@@ -212,7 +204,8 @@ public final class KenKenGenerator extends Generator {
         return l;
     }
 
-    private interface Directionable { //todo è necessaria?
+    //OK
+    private interface Directionable {
         CellIF doOp(CellIF ec);
     }
     private enum Direction implements Directionable{
@@ -239,7 +232,7 @@ public final class KenKenGenerator extends Generator {
             }
         };
 
-        public Direction chooseRandomly() {
+        public static Direction chooseRandomly() {
             int choose = (int) (Math.random() * 3);
             switch (choose) {
                 case 0: return Direction.DESTRA;
@@ -249,6 +242,7 @@ public final class KenKenGenerator extends Generator {
         }
     }
 
+    //OK
     private CellIF nextPoint(){
         for(int i=0; i<gg.getDimension(); i++){
             for(int j=0; j<gg.getDimension(); j++){
@@ -259,7 +253,8 @@ public final class KenKenGenerator extends Generator {
         return null;
     }
 
-    @Override
+
+    @Override //OK
     public void eraseNumbers() {
         gg.clean();
     }

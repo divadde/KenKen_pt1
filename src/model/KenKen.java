@@ -22,7 +22,7 @@ public final class KenKen implements GridGame, Serializable {
         return INSTANCE;
     }
 
-
+    //OK
     public MementoTable createMemento(){
         return new MementoTable(getTable());
     }
@@ -251,10 +251,7 @@ public final class KenKen implements GridGame, Serializable {
         private void addInContrast(Cell c){
             inContrast.add(c);
         }
-        private void removeInContrast(Cell c){
-
-            inContrast.remove(c);
-        }
+        private void removeInContrast(Cell c){inContrast.remove(c); }
 
         @Override
         public boolean getState(){
